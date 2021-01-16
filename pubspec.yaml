@@ -2,7 +2,7 @@ name: high_chart
 description: A new Flutter plugin.
 version: 0.0.1
 author: senthil_nasa
-homepage:
+homepage: https://github.com/senthilnasa/high_chart
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
