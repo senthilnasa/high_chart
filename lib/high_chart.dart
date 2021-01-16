@@ -18,7 +18,6 @@ class HighCharts extends StatefulWidget {
   _HighChartsState createState() => _HighChartsState();
 }
 
-
 // <!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" /></head><body><div id="chart"><h1>Please Wait !!! </h1></div></body></html><script>function senthilnasa(a){ eval(a); return true;}</script></html>
 /// 'data:text/html;base64,' + base64Encode(const Utf8Encoder().convert( /* STRING ABOVE */ ))
 const highChartHtml =
@@ -41,7 +40,7 @@ class _HighChartsState extends State<HighCharts> {
     await _controller?.evaluateJavascript('''
       $highchartsScript
         var a= senthilnasa(`Highcharts.chart('chart',
-        ${_currentData}
+        $_currentData
         )`);
     ''');
   }
