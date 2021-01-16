@@ -1,0 +1,31 @@
+name: high_chart
+description: A new Flutter plugin.
+version: 0.0.1
+author: senthil_nasa
+homepage:
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+  flutter: ">=1.20.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  #Flutter Web View Plugin
+  webview_flutter: ^1.0.1
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: me.senthil.high_chart
+        pluginClass: HighChartPlugin
+      ios:
+        pluginClass: HighChartPlugin
