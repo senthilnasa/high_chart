@@ -1,4 +1,4 @@
-package me.senthil.high_chart
+package me.senthilnasa.high_chart
 
 import androidx.annotation.NonNull
 

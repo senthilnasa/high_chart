@@ -2,9 +2,9 @@
 <img src="https://i.ibb.co/GnKh9tp/kisspng-highsoft-highcharts-data-visualization-technology-crisp-5b0bc0d5cc2c53-729988461527496917836.jpg" />
 </p>
 
-[![pub](https://img.shields.io/pub/v/high_chart)](https://github.com/senthilnasa/high_chart)
+[![pub](https://img.shields.io/pub/v/high_chart)](https://www.highcharts.com/)
 
-*A chart library based on<a href="https://github.com/apache/incubator-echarts"> High Charts (.JS)</a>, able to build advanced charts like Pie chart, linear chart, etc* 
+*A chart library based on<a href="https://github.com/highcharts/highcharts"> High Charts (.JS)</a>, able to build advanced charts like Pie chart, linear chart, etc* 
 
 <div align="center">
 <img src="https://i.ibb.co/4VWsfT0/demo.gif"/>&nbsp;&nbsp;
@@ -34,7 +34,7 @@ Details see [pub.dev](https://pub.dev/packages/high_chart).
 
 # Usage
 
-The `flutter_echarts` package itself is very simple to use, just like a common `statelessWidget`:
+The `high_chart` package itself is very simple to use, just like a common `statelessWidget`:
 
 
 ```dart
@@ -117,7 +117,7 @@ static const _chart_data = '''{
 
 
 
-See the full [flutter_echarts_example](https://github.com/entronad/flutter_echarts/tree/master/example).
+See the full [flutter_High Chart_example](https://github.com/entronad/flutter_High Chart/tree/master/example).
 
 # Widget Properties
 
@@ -127,7 +127,7 @@ See the full [flutter_echarts_example](https://github.com/entronad/flutter_echar
 
 *( required )*
 
-ECharts is mainly configured by passing a string value to the JavaScript `data` property. 
+High Chart is mainly configured by passing a string value to the JavaScript `data` property. 
 
 You can use `jsonEncode()` function in `dart:convert` to convert data in Dart object form:
 

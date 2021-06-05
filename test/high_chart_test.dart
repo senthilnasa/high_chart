@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:high_chart/high_chart.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('high_chart');
@@ -17,7 +16,7 @@ void main() {
     channel.setMockMethodCallHandler(null);
   });
 
-  test('getPlatformVersion', ()  {
+  test('getPlatformVersion', () {
     print("Testing Data");
   });
 }

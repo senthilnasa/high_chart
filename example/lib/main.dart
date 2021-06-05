@@ -88,6 +88,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text('High Chart Example App'),
         ),
         body: Center(

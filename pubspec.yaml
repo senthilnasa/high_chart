@@ -1,10 +1,10 @@
 name: high_chart
 description: A chart library based on High Charts (.JS), able to build advanced charts like Pie chart, linear chart, etc.
-version: 1.0.0
+version: 1.2.0
 homepage: https://github.com/senthilnasa/high_chart
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
   flutter: ">=1.20.0"
 
 dependencies:
@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
 
   #Flutter Web View Plugin
-  webview_flutter: ^1.0.7
+  webview_flutter: ^2.0.8
 
 
 dev_dependencies:
@@ -24,7 +24,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: me.senthil.high_chart
+        package: me.senthilnasa.high_chart
         pluginClass: HighChartPlugin
       ios:
         pluginClass: HighChartPlugin
