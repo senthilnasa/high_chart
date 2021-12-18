@@ -117,7 +117,7 @@ static const _chart_data = '''{
 
 
 
-See the full [flutter_High Chart_example](https://github.com/entronad/flutter_High Chart/tree/master/example).
+See the full [flutter_High Chart_example](https://github.com/senthilnasa/high_chart/tree/master/example).
 
 # Widget Properties
 
