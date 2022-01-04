@@ -3,7 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:high_chart/high_chart.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(Example());
+}
+
+class Example extends StatelessWidget {
+  const Example({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: MyApp());
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -17,9 +26,10 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  static const _chart_data = '''{
+  int count = 0;
+  String _chart_data() => '''{
       title: {
-          text: 'Combination chart'
+          text: 'Combination chart ${count}'
       },
       xAxis: {
           categories: ['Apples', 'Oranges', 'Pears', 'Bananas', 'Plums']
@@ -85,16 +95,44 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text('High Chart Example App'),
-        ),
-        body: Center(
-          child: HighCharts(
-            data: _chart_data,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text('High Charts Example App'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                count++;
+                if (count % 2 == 0) {
+                  setState(() {});
+                }
+                // print(count);
+              },
+              icon: Icon(Icons.refresh)),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            HighCharts(
+              size: Size(MediaQuery.of(context).size.width,
+                  MediaQuery.of(context).size.height / 2),
+              data: _chart_data(),
+              scripts: [
+                'https://code.highcharts.com/modules/networkgraph.js',
+                'https://code.highcharts.com/modules/exporting.js',
+              ],
+            ),
+            HighCharts(
+              size: Size(MediaQuery.of(context).size.width,
+                  MediaQuery.of(context).size.height / 2),
+              data: _chart_data(),
+              scripts: [
+                'https://code.highcharts.com/modules/networkgraph.js',
+                'https://code.highcharts.com/modules/exporting.js',
+              ],
+            ),
+          ],
         ),
       ),
     );
