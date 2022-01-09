@@ -1,36 +1,32 @@
 import 'package:flutter/material.dart';
-
 import 'package:high_chart/high_chart.dart';
 
 void main() {
-  runApp(Example());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const MyApp());
 }
 
-class Example extends StatelessWidget {
-  const Example({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: MyApp());
+    return const MaterialApp(home: ExampleChart());
   }
 }
 
-class MyApp extends StatefulWidget {
+class ExampleChart extends StatefulWidget {
+  const ExampleChart({Key? key}) : super(key: key);
+
   @override
-  _MyAppState createState() => _MyAppState();
+  _ExampleChartState createState() => _ExampleChartState();
 }
 
-class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  int count = 0;
-  String _chart_data() => '''{
+class _ExampleChartState extends State<ExampleChart> {
+  final String _chartData = '''{
       title: {
-          text: 'Combination chart ${count}'
-      },
+          text: 'Combination chart'
+      },    
       xAxis: {
           categories: ['Apples', 'Oranges', 'Pears', 'Bananas', 'Plums']
       },
@@ -50,15 +46,15 @@ class _MyAppState extends State<MyApp> {
       series: [{
           type: 'column',
           name: 'Jane',
-          data: [3, 2, 1, 3, 4]
+          data: [3, 2, 1, 3, 3]
       }, {
           type: 'column',
           name: 'John',
-          data: [2, 3, 5, 7, 6]
+          data: [2, 4, 5, 7, 6]
       }, {
           type: 'column',
           name: 'Joe',
-          data: [4, 3, 3, 9, 0]
+          data: [4, 3, 3, 5, 0]
       }, {
           type: 'spline',
           name: 'Average',
@@ -96,44 +92,23 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.teal,
       appBar: AppBar(
         centerTitle: true,
         title: const Text('High Charts Example App'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                count++;
-                if (count % 2 == 0) {
-                  setState(() {});
-                }
-                // print(count);
-              },
-              icon: Icon(Icons.refresh)),
-        ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            HighCharts(
-              size: Size(MediaQuery.of(context).size.width,
-                  MediaQuery.of(context).size.height / 2),
-              data: _chart_data(),
-              scripts: [
-                'https://code.highcharts.com/modules/networkgraph.js',
-                'https://code.highcharts.com/modules/exporting.js',
-              ],
-            ),
-            HighCharts(
-              size: Size(MediaQuery.of(context).size.width,
-                  MediaQuery.of(context).size.height / 2),
-              data: _chart_data(),
-              scripts: [
-                'https://code.highcharts.com/modules/networkgraph.js',
-                'https://code.highcharts.com/modules/exporting.js',
-              ],
-            ),
-          ],
+      body: HighCharts(
+        loader: const SizedBox(
+          child: LinearProgressIndicator(),
+          width: 200,
         ),
+        size: const Size(400, 400),
+        data: _chartData,
+        scripts: const [
+          "https://code.highcharts.com/highcharts.js",
+          'https://code.highcharts.com/modules/networkgraph.js',
+          'https://code.highcharts.com/modules/exporting.js',
+        ],
       ),
     );
   }
