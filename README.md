@@ -13,4 +13,4 @@
 A Flutter package to use [High Charts](https://www.highcharts.com/)
 
 ## Usage
-To use this plugin, please visit the [Cloud Messaging Usage documentation](https://github.com/senthilnasa/high_chart/wiki)
+To use this plugin, please visit the [Usage documentation](https://github.com/senthilnasa/high_chart/wiki)
