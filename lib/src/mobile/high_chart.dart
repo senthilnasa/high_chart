@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 ///
@@ -140,6 +141,13 @@ class _HighChartsState extends State<HighCharts> {
             },
             onPageFinished: (String url) {
               _loadData();
+            },
+            navigationDelegate: (NavigationRequest request) async {
+              if (await canLaunch(request.url)) {
+                launch(request.url);
+              }
+
+              return NavigationDecision.prevent;
             },
           ),
         ],
