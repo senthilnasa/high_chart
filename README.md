@@ -4,7 +4,7 @@
 
 [![pub](https://img.shields.io/pub/v/high_chart)](https://www.highcharts.com/)
 
-*A chart library based on<a href="https://github.com/highcharts/highcharts"> High Charts (.JS)</a>, able to build advanced charts like Pie chart, linear chart, etc* 
+_A chart library based on<a href="https://github.com/highcharts/highcharts"> High Charts (.JS)</a>, able to build advanced charts like Pie chart, linear chart, etc_
 
 <div align="center">
 <img src="https://i.ibb.co/4VWsfT0/demo.gif"/>&nbsp;&nbsp;
@@ -12,16 +12,13 @@
 
 </div>
 
-
-
-
 # Installing
 
 Add this to your package's pubspec.yaml file:
 
 ```yaml
 dependencies:
-    high_chart: #latest version
+  high_chart: #latest version
 ```
 
 Now in your Dart code, you can use:
@@ -35,7 +32,6 @@ Details see [pub.dev](https://pub.dev/packages/high_chart).
 # Usage
 
 The `high_chart` package itself is very simple to use, just like a common `statelessWidget`:
-
 
 ```dart
 static const _chart_data = '''{
@@ -112,10 +108,8 @@ static const _chart_data = '''{
     width: 350,
     height: 350,
     )
-    
+
 ```
-
-
 
 See the full [flutter_High Chart_example](https://github.com/senthilnasa/high_chart/tree/master/example).
 
@@ -123,11 +117,11 @@ See the full [flutter_High Chart_example](https://github.com/senthilnasa/high_ch
 
 **data**
 
-*String*
+_String_
 
-*( required )*
+_( required )_
 
-High Chart is mainly configured by passing a string value to the JavaScript `data` property. 
+High Chart is mainly configured by passing a string value to the JavaScript `data` property.
 
 You can use `jsonEncode()` function in `dart:convert` to convert data in Dart object form:
 
@@ -140,9 +134,9 @@ Because JavaScript don't have `'''`, you can use this operator to reduce some es
 ```dart
 HighCharts(
   data: '''
-  
+
     // data string
-    
+
   ''',
 ),
 ```
