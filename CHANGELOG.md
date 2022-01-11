@@ -1,3 +1,7 @@
+## [2.0.2]
+
+- [Fixed] Update packages dependencies to  the latest version.
+- 
 ## [2.0.1]
 
 - [Fixed] Prevented highchart link to open within webview and redirecting to broswer.
