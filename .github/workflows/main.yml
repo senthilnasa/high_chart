@@ -3,9 +3,9 @@ name: build
 # Trigger the workflow on push or pull request
 on:
   push:
-    branches: [master]
+    branches: [dev, master]
   pull_request:
-    branches: [master]
+    branches: [dev, master]
 #A workflow run is made up of one or more jobs. Jobs run in parallel by default.
 jobs:
   test:
@@ -32,3 +32,20 @@ jobs:
       # Upload coverage reports to Codecov
       # https://github.com/marketplace/actions/codecov
       - uses: codecov/codecov-action@v1.0.7
+
+  build:
+    defaults:
+        run:
+          working-directory: ./examples/
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+        with:
+          channel: stable
+      - run: flutter pub get
+      - run: flutter test
+      - uses: bluefireteam/flutter-gh-pages@v7
+        with:
+          baseHref: /high_chart/
