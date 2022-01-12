@@ -8,35 +8,11 @@ on:
     branches: [dev, master]
 #A workflow run is made up of one or more jobs. Jobs run in parallel by default.
 jobs:
-  test:
-    #The type of machine to run the job on. [windows,macos, ubuntu , self-hosted]
-    defaults:
-      run:
-        working-directory: ./
-    runs-on: ubuntu-latest
-    #sequence of tasks called
-    steps:
-      # The branch or tag ref that triggered the workflow will be checked out.
-      # https://github.com/actions/checkout
-      - uses: actions/checkout@v1
-      # Setup a flutter environment.
-      # https://github.com/marketplace/actions/flutter-action
-      - uses: subosito/flutter-action@v1
-        with:
-          flutter-version: "2.8.0"
-          channel: "stable"
-      - run: flutter pub get
-      #- run: flutter analyze
-      # run  flutter widgets tests  and unit tests
-      - run: flutter test --coverage
-      # Upload coverage reports to Codecov
-      # https://github.com/marketplace/actions/codecov
-      - uses: codecov/codecov-action@v1.0.7
-
+  # uil
   build:
     defaults:
         run:
-          working-directory: ./examples/
+          working-directory: ./
     runs-on: ubuntu-latest
 
     steps:
@@ -45,6 +21,7 @@ jobs:
         with:
           channel: stable
       - run: flutter pub get
+      - run: cd example/
       - run: flutter test
       - uses: bluefireteam/flutter-gh-pages@v7
         with:
