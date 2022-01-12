@@ -11,7 +11,7 @@ class HighCharts extends StatefulWidget {
       {required this.data,
       required this.size,
       this.loader = const Center(child: CircularProgressIndicator()),
-      this.scripts = const [],
+      this.scripts = const ["https://code.highcharts.com/highcharts.js"],
       Key? key})
       : super(key: key);
 
