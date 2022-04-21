@@ -132,6 +132,7 @@ class _HighChartsState extends State<HighCharts> {
             javascriptMode: JavascriptMode.unrestricted,
             zoomEnabled: false,
             initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
+            backgroundColor: Colors.transparent,
             onWebViewCreated: (WebViewController _) {
               _controller = _;
               _loadHtmlContent(_);
