@@ -1,3 +1,7 @@
+## [2.0.3]
+
+- [Fixed] Fix Loading Issue in IoS and Update packages dependencies to  the latest version 
+- 
 ## [2.0.2]
 
 - [Fixed] Update packages dependencies to  the latest version.

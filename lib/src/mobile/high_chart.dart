@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 ///
@@ -144,11 +144,15 @@ class _HighChartsState extends State<HighCharts> {
               _loadData();
             },
             navigationDelegate: (NavigationRequest request) async {
-              if (await canLaunch(request.url)) {
-                launch(request.url);
+              if (await canLaunchUrlString(request.url)) {
+                try {
+                  launchUrlString(request.url);
+                } catch (e) {
+                  debugPrint('High Charts Error ->' + e.toString());
+                }
+                return NavigationDecision.prevent;
               }
-
-              return NavigationDecision.prevent;
+              return NavigationDecision.navigate;
             },
           ),
         ],
