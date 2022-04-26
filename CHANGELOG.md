@@ -1,11 +1,14 @@
 ## [2.0.3]
 
-- [Fixed] Fix Loading Issue in IoS and Update packages dependencies to  the latest version 
-- 
+- [Fixed] Loading Issue in IoS 
+- Update packages dependencies to  the latest version 
+
+
 ## [2.0.2]
 
-- [Fixed] Update packages dependencies to  the latest version.
-- 
+- Update packages dependencies to  the latest version.
+
+
 ## [2.0.1]
 
 - [Fixed] Prevented highchart link to open within webview and redirecting to broswer.
