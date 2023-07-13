@@ -172,10 +172,12 @@ class _HighChartsState extends State<HighCharts> {
   }
 
   void _loadData() {
-    setState(() {
-      _isLoaded = true;
-    });
-    _controller!.runJavascriptReturningResult(
-        "senthilnasa(`Highcharts.chart('highChartsDiv',${widget.data} )`);");
+    if (mounted) {
+      setState(() {
+        _isLoaded = true;
+      });
+      _controller!.runJavascriptReturningResult(
+          "senthilnasa(`Highcharts.chart('highChartsDiv',${widget.data} )`);");
+    }
   }
 }
