@@ -19,10 +19,10 @@ class ExampleChart extends StatefulWidget {
   const ExampleChart({Key? key}) : super(key: key);
 
   @override
-  _ExampleChartState createState() => _ExampleChartState();
+  ExampleChartState createState() => ExampleChartState();
 }
 
-class _ExampleChartState extends State<ExampleChart> {
+class ExampleChartState extends State<ExampleChart> {
   final String _chartData = '''{
       title: {
           text: 'Combination chart'
@@ -99,8 +99,8 @@ class _ExampleChartState extends State<ExampleChart> {
       ),
       body: HighCharts(
         loader: const SizedBox(
-          child: LinearProgressIndicator(),
           width: 200,
+          child: LinearProgressIndicator(),
         ),
         size: const Size(400, 400),
         data: _chartData,

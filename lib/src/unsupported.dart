@@ -9,6 +9,7 @@ class HighCharts extends StatefulWidget {
       required this.size,
       this.loader = const CircularProgressIndicator(),
       this.scripts = const [],
+      this.localScripts = const [],
       Key? key})
       : super(key: key);
 
@@ -94,11 +95,12 @@ class HighCharts extends StatefulWidget {
   ///```
   ///
   final List<String> scripts;
+  final List<String> localScripts;
   @override
-  _HighChartsState createState() => _HighChartsState();
+  HighChartsState createState() => HighChartsState();
 }
 
-class _HighChartsState extends State<HighCharts> {
+class HighChartsState extends State<HighCharts> {
   @override
   Widget build(BuildContext context) {
     return const Center(child: Text("HighCharts: UnSupported Platform"));

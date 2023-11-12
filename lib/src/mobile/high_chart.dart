@@ -1,19 +1,20 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 ///
 ///A Chart library based on [High Charts (.JS)](https://www.highcharts.com/)
 ///
 class HighCharts extends StatefulWidget {
-  const HighCharts(
-      {required this.data,
-      required this.size,
-      this.loader = const Center(child: CircularProgressIndicator()),
-      this.scripts = const ["https://code.highcharts.com/highcharts.js"],
-      Key? key})
-      : super(key: key);
+  const HighCharts({
+    required this.data,
+    required this.size,
+    this.loader = const Center(child: CircularProgressIndicator()),
+    this.scripts = const [],
+    this.localScripts = const [],
+    Key? key,
+  }) : super(key: key);
 
   ///Custom `loader` widget, until script is loaded
   ///
@@ -97,11 +98,13 @@ class HighCharts extends StatefulWidget {
   ///```
   ///
   final List<String> scripts;
+  final List<String> localScripts;
+
   @override
-  _HighChartsState createState() => _HighChartsState();
+  HighChartsState createState() => HighChartsState();
 }
 
-class _HighChartsState extends State<HighCharts> {
+class HighChartsState extends State<HighCharts> {
   bool _isLoaded = false;
 
   WebViewController? _controller;
@@ -111,9 +114,42 @@ class _HighChartsState extends State<HighCharts> {
     if (oldWidget.data != widget.data ||
         oldWidget.size != widget.size ||
         oldWidget.scripts != widget.scripts) {
-      _loadHtmlContent(_controller!);
+      _loadHtmlContent();
     }
     super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void initState() {
+    _controller = WebViewController()
+      ..setBackgroundColor(Colors.transparent)
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..enableZoom(false)
+      ..setBackgroundColor(const Color(0x00000000))
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // Update loading bar.
+          },
+          onPageFinished: (String url) {
+            _loadData();
+          },
+          onWebResourceError: (WebResourceError error) {},
+          onNavigationRequest: (NavigationRequest request) async {
+            if (await canLaunchUrlString(request.url)) {
+              try {
+                launchUrlString(request.url);
+              } catch (e) {
+                debugPrint("High Charts Error ->$e");
+              }
+              return NavigationDecision.prevent;
+            }
+            return NavigationDecision.navigate;
+          },
+        ),
+      );
+    _loadHtmlContent();
+    super.initState();
   }
 
   @override
@@ -125,52 +161,52 @@ class _HighChartsState extends State<HighCharts> {
         alignment: Alignment.center,
         fit: StackFit.expand,
         children: [
-          !_isLoaded ? widget.loader : const SizedBox.shrink(),
-          WebView(
-            debuggingEnabled: kDebugMode,
-            allowsInlineMediaPlayback: true,
-            javascriptMode: JavascriptMode.unrestricted,
-            zoomEnabled: false,
-            initialMediaPlaybackPolicy: AutoMediaPlaybackPolicy.always_allow,
-            onWebViewCreated: (WebViewController _) {
-              _controller = _;
-              _loadHtmlContent(_);
-            },
-            onWebResourceError: (error) {
-              debugPrint(error.toString());
-            },
-            onPageFinished: (String url) {
-              _loadData();
-            },
-            navigationDelegate: (NavigationRequest request) async {
-              if (await canLaunch(request.url)) {
-                launch(request.url);
-              }
-
-              return NavigationDecision.prevent;
-            },
+          !_isLoaded || _controller == null
+              ? widget.loader
+              : const SizedBox.shrink(),
+          WebViewWidget(
+            controller: _controller!,
           ),
         ],
       ),
     );
   }
 
-  void _loadHtmlContent(WebViewController _) {
+  void _loadHtmlContent() async {
+    if (_controller == null) return;
     String html = "";
     html +=
         '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/> </head> <body><div style="height:100%;width:100%;" id="highChartsDiv"></div><script>function senthilnasa(a){ eval(a); return true;}</script>';
+
+    for (String src in widget.localScripts) {
+      String? srcString = await getLocalScript(src);
+      if (srcString != null) {
+        html += '<script async="false">$srcString</script>';
+      }
+    }
     for (String src in widget.scripts) {
       html += '<script async="false" src="$src"></script>';
     }
     html += '</body></html>';
-    _.loadHtmlString(html);
+    _controller!.loadHtmlString(html);
   }
 
   void _loadData() {
-    setState(() {
-      _isLoaded = true;
-    });
-    _controller!.runJavascriptReturningResult(
-        "senthilnasa(`Highcharts.chart('highChartsDiv',${widget.data} )`);");
+    if (mounted) {
+      setState(() {
+        _isLoaded = true;
+      });
+      _controller!.runJavaScript(
+          "senthilnasa(`Highcharts.chart('highChartsDiv',${widget.data} )`);");
+    }
+  }
+
+  Future<String?> getLocalScript(String src) async {
+    try {
+      return await rootBundle.loadString(src);
+    } catch (e) {
+      debugPrint('Failed to load $src');
+      return null;
+    }
   }
 }

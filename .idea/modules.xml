@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/high_chart.iml" filepath="$PROJECT_DIR$/high_chart.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/high_chart_android.iml" filepath="$PROJECT_DIR$/android/high_chart_android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/example/android/high_chart_example_android.iml" filepath="$PROJECT_DIR$/example/android/high_chart_example_android.iml" />
     </modules>
   </component>
 </project>
