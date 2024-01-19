@@ -189,8 +189,16 @@ class _HighChartsState extends State<HighCharts> {
 
   String _htmlContent() {
     String html = "";
-    html +=
-        '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/> </head> <body><div style="height:100%;width:100%;" id="highChartsDiv"></div><script>function senthilnasa(a){ eval(a); return true;}</script>';
+    html += '''<!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/> 
+              <style>html,body{height:100%;width:100%;margin:0;padding:0;}</style>
+            </head> 
+            <body>
+              <div style="height:100%;width:100%;" id="highChartsDiv"></div>
+              <script>function senthilnasa(a){ eval(a); return true;}</script>''';
     for (String src in widget.scripts) {
       html += '<script async="false" src="$src"></script>';
     }
