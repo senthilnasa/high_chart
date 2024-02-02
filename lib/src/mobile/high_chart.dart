@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 ///
 ///A Chart library based on [High Charts (.JS)](https://www.highcharts.com/)
@@ -14,8 +14,7 @@ class HighCharts extends StatefulWidget {
       required this.size,
       this.loader = const Center(child: CircularProgressIndicator()),
       this.scripts = const [],
-      Key? key})
-      : super(key: key);
+      super.key});
 
   ///Custom `loader` widget, until script is loaded
   ///
@@ -100,10 +99,10 @@ class HighCharts extends StatefulWidget {
   ///
   final List<String> scripts;
   @override
-  _HighChartsState createState() => _HighChartsState();
+  HighChartsState createState() => HighChartsState();
 }
 
-class _HighChartsState extends State<HighCharts> {
+class HighChartsState extends State<HighCharts> {
   bool _isLoaded = false;
 
   late WebViewController _controller;
@@ -152,7 +151,7 @@ class _HighChartsState extends State<HighCharts> {
             try {
               launchUrlString(request.url);
             } catch (e) {
-              debugPrint('High Charts Error ->' + e.toString());
+              debugPrint('High Charts Error ->$e');
             }
             return NavigationDecision.prevent;
           }

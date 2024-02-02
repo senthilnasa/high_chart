@@ -1,3 +1,9 @@
+## [2.1.0] -2024-02-03
+- [Fixed] Issue with the android gradle version
+- Update packages dependencies to the latest version
+- [Fixed] Issue with the chart not rendering in the webview
+
+
 ## [2.0.3]
 
 - [Fixed] Loading Issue in IoS 
