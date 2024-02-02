@@ -1,7 +1,7 @@
 name: high_chart
 description: A chart library based on High Charts (.JS), able to build advanced
   charts like Pie chart, linear chart, etc.
-version: 2.0.3
+version: 2.1.0
 homepage: https://github.com/senthilnasa/high_chart
 
 environment:
