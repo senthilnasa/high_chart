@@ -13,8 +13,10 @@ class HighCharts extends StatefulWidget {
   const HighCharts(
       {required this.data,
       required this.size,
+      this.globalOptions,
       this.loader = const CircularProgressIndicator(),
       this.scripts = const [],
+      this.scriptsAreLocalAssets = false,
       super.key});
 
   ///Custom `loader` widget, until script is loaded
@@ -23,6 +25,11 @@ class HighCharts extends StatefulWidget {
   ///
   ///Defaults to `CircularProgressIndicator`
   final Widget loader;
+
+  ///Whether passed scripts are local assets.
+  ///
+  ///This can be used on mobile platforms if injection of local scripts (from assets) is necessary.
+  final bool scriptsAreLocalAssets;
 
   ///Chart data
   ///
@@ -60,6 +67,10 @@ class HighCharts extends StatefulWidget {
   ///
   ///Reference: [High Charts API](https://api.highcharts.com/highcharts)
   final String data;
+
+  ///Options that are passed to Highcharts.setOptions()
+  ///Reference: [High Charts API](https://api.highcharts.com/highcharts)
+  final String? globalOptions;
 
   ///Chart size
   ///
@@ -144,6 +155,9 @@ class HighChartsState extends State<HighCharts> {
 
   void _load() {
     Future.delayed(const Duration(milliseconds: 250), () {
+      if (widget.globalOptions != null) {
+        eval("Highcharts.setOptions(${widget.globalOptions});");
+      }
       eval("Highcharts.chart('$_highChartsId',${widget.data});");
     });
   }

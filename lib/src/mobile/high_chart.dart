@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
@@ -12,8 +13,10 @@ class HighCharts extends StatefulWidget {
   const HighCharts(
       {required this.data,
       required this.size,
+      this.globalOptions,
       this.loader = const Center(child: CircularProgressIndicator()),
       this.scripts = const [],
+      this.scriptsAreLocalAssets = false,
       super.key});
 
   ///Custom `loader` widget, until script is loaded
@@ -22,6 +25,11 @@ class HighCharts extends StatefulWidget {
   ///
   ///Defaults to `CircularProgressIndicator`
   final Widget loader;
+
+  ///Whether passed scripts are local assets.
+  ///
+  ///This can be used on mobile platforms if injection of local scripts (from assets) is necessary.
+  final bool scriptsAreLocalAssets;
 
   ///Chart data
   ///
@@ -59,6 +67,10 @@ class HighCharts extends StatefulWidget {
   ///
   ///Reference: [High Charts API](https://api.highcharts.com/highcharts)
   final String data;
+
+  ///Options that are passed to Highcharts.setOptions()
+  ///Reference: [High Charts API](https://api.highcharts.com/highcharts)
+  final String? globalOptions;
 
   ///Chart size
   ///
@@ -135,7 +147,6 @@ class HighChartsState extends State<HighCharts> {
           _controller.platform as WebKitWebViewController;
       webKitWebViewController.setInspectable(kDebugMode);
     }
-
     _controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..enableZoom(false)
@@ -144,7 +155,13 @@ class HighChartsState extends State<HighCharts> {
       ..setNavigationDelegate(
         NavigationDelegate(onWebResourceError: (err) {
           debugPrint(err.toString());
-        }, onPageFinished: ((url) {
+        }, onPageFinished: ((url) async {
+          if (widget.scriptsAreLocalAssets) {
+            for (String src in widget.scripts) {
+              String script = await rootBundle.loadString(src);
+              _controller.runJavaScript(script);
+            }
+          }
           _loadData();
         }), onNavigationRequest: ((request) async {
           if (await canLaunchUrlString(request.url)) {
@@ -180,7 +197,9 @@ class HighChartsState extends State<HighCharts> {
         fit: StackFit.expand,
         children: [
           !_isLoaded ? widget.loader : const SizedBox.shrink(),
-          WebViewWidget(controller: _controller)
+          WebViewWidget(
+            controller: _controller,
+          )
         ],
       ),
     );
@@ -190,8 +209,10 @@ class HighChartsState extends State<HighCharts> {
     String html = "";
     html +=
         '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/> </head> <body><div style="height:100%;width:100%;" id="highChartsDiv"></div><script>function senthilnasa(a){ eval(a); return true;}</script>';
-    for (String src in widget.scripts) {
-      html += '<script async="false" src="$src"></script>';
+    if (widget.scriptsAreLocalAssets == false) {
+      for (String src in widget.scripts) {
+        html += '<script async="false" src="$src"></script>';
+      }
     }
     html += '</body></html>';
 
@@ -203,6 +224,10 @@ class HighChartsState extends State<HighCharts> {
       setState(() {
         _isLoaded = true;
       });
+      if (widget.globalOptions != null) {
+        _controller.runJavaScriptReturningResult(
+            "senthilnasa(`Highcharts.setOptions(${widget.globalOptions})`);");
+      }
       _controller.runJavaScriptReturningResult(
           "senthilnasa(`Highcharts.chart('highChartsDiv',${widget.data} )`);");
     }
