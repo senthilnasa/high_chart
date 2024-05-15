@@ -12,7 +12,7 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 class HighCharts extends StatefulWidget {
   const HighCharts(
       {required this.data,
-      required this.size,
+      this.size,
       this.globalOptions,
       this.loader = const Center(child: CircularProgressIndicator()),
       this.scripts = const [],
@@ -79,7 +79,7 @@ class HighCharts extends StatefulWidget {
   ///```dart
   ///Size size = Size(400, 300);
   ///```
-  final Size size;
+  final Size? size;
 
   ///Scripts to be loaded
   ///
@@ -189,26 +189,37 @@ class HighChartsState extends State<HighCharts> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: widget.size.height,
-      width: widget.size.width,
-      child: Stack(
-        alignment: Alignment.center,
-        fit: StackFit.expand,
-        children: [
-          !_isLoaded ? widget.loader : const SizedBox.shrink(),
-          WebViewWidget(
-            controller: _controller,
+    return widget.size == null
+        ? Stack(
+            alignment: Alignment.center,
+            fit: StackFit.expand,
+            children: [
+              !_isLoaded ? widget.loader : const SizedBox.shrink(),
+              WebViewWidget(
+                controller: _controller,
+              )
+            ],
           )
-        ],
-      ),
-    );
+        : SizedBox(
+            height: widget.size!.height,
+            width: widget.size!.width,
+            child: Stack(
+              alignment: Alignment.center,
+              fit: StackFit.expand,
+              children: [
+                !_isLoaded ? widget.loader : const SizedBox.shrink(),
+                WebViewWidget(
+                  controller: _controller,
+                )
+              ],
+            ),
+          );
   }
 
   String _htmlContent() {
     String html = "";
     html +=
-        '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/> </head> <body><div style="height:100%;width:100%;" id="highChartsDiv"></div><script>function senthilnasa(a){ eval(a); return true;}</script>';
+        '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/> </head> <body><div style="height:100vh;width:100vw;overflow:hidden;" id="highChartsDiv"></div><script>function senthilnasa(a){ eval(a); return true;}</script>';
     if (widget.scriptsAreLocalAssets == false) {
       for (String src in widget.scripts) {
         html += '<script async="false" src="$src"></script>';
