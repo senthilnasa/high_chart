@@ -1,6 +1,6 @@
 import 'dart:html' as html;
 import 'dart:math';
-import 'dart:ui' as ui;
+import 'dart:ui_web' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -12,7 +12,7 @@ import 'js.dart';
 class HighCharts extends StatefulWidget {
   const HighCharts(
       {required this.data,
-      required this.size,
+      this.size,
       this.globalOptions,
       this.loader = const CircularProgressIndicator(),
       this.scripts = const [],
@@ -79,7 +79,7 @@ class HighCharts extends StatefulWidget {
   ///```dart
   ///Size size = Size(400, 300);
   ///```
-  final Size size;
+  final Size? size;
 
   ///Scripts to be loaded
   ///
@@ -146,11 +146,13 @@ class HighChartsState extends State<HighCharts> {
       return htmlElement;
     });
 
-    return SizedBox(
-      height: widget.size.height,
-      width: widget.size.width,
-      child: HtmlElementView(viewType: _highChartsId),
-    );
+    return widget.size == null
+        ? HtmlElementView(viewType: _highChartsId)
+        : SizedBox(
+            height: widget.size!.height,
+            width: widget.size!.width,
+            child: HtmlElementView(viewType: _highChartsId),
+          );
   }
 
   void _load() {

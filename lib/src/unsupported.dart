@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class HighCharts extends StatefulWidget {
   const HighCharts(
       {required this.data,
-      required this.size,
+      this.size,
       this.globalOptions,
       this.loader = const CircularProgressIndicator(),
       this.scripts = const [],
@@ -75,7 +75,7 @@ class HighCharts extends StatefulWidget {
   ///```dart
   ///Size size = Size(400, 400);
   ///```
-  final Size size;
+  final Size? size;
 
   ///Scripts to be loaded
   ///
