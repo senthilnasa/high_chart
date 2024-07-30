@@ -190,16 +190,19 @@ class HighChartsState extends State<HighCharts> {
   @override
   Widget build(BuildContext context) {
     return widget.size == null
-        ? Stack(
-            alignment: Alignment.center,
-            fit: StackFit.expand,
-            children: [
-              !_isLoaded ? widget.loader : const SizedBox.shrink(),
-              WebViewWidget(
-                controller: _controller,
-              )
-            ],
-          )
+        ? LayoutBuilder(
+            builder: (context, constraints) => ConstrainedBox(
+                constraints: constraints,
+                child: Stack(
+                  alignment: Alignment.center,
+                  fit: StackFit.expand,
+                  children: [
+                    !_isLoaded ? widget.loader : const SizedBox.shrink(),
+                    WebViewWidget(
+                      controller: _controller,
+                    )
+                  ],
+                )))
         : SizedBox(
             height: widget.size!.height,
             width: widget.size!.width,

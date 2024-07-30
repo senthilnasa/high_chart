@@ -13,11 +13,12 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  js: ^0.6.3
-  url_launcher: ^6.2.4
-  webview_flutter: ^4.7.0
-  webview_flutter_android: ^3.14.0
-  webview_flutter_wkwebview: ^3.10.2
+  web: ^0.5.1
+  url_launcher: ^6.3.0
+
+  webview_flutter: ^4.8.0
+  webview_flutter_android: ^3.16.4
+  webview_flutter_wkwebview: ^3.13.1
 
 
 dev_dependencies:

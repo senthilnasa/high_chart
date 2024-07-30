@@ -1,8 +1,7 @@
-import 'dart:html' as html;
 import 'dart:math';
-import 'dart:ui_web' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:web/web.dart' as web;
 
 import 'js.dart';
 
@@ -138,16 +137,27 @@ class HighChartsState extends State<HighCharts> {
   @override
   Widget build(BuildContext context) {
     // ignore: undefined_prefixed_name
-    ui.platformViewRegistry.registerViewFactory(_highChartsId, (int viewId) {
-      final html.Element htmlElement = html.DivElement()
+/*    ui.platformViewRegistry.registerViewFactory(_highChartsId, (int viewId) {
+      final html.Element htmlElement = html.HTMLDivElement()
         ..style.width = '100%'
         ..style.height = '100%'
-        ..setAttribute("id", _highChartsId);
+        ..id = _highChartsId;
       return htmlElement;
-    });
-
+    });*/
     return widget.size == null
-        ? HtmlElementView(viewType: _highChartsId)
+        ? LayoutBuilder(
+            builder: (context, constraints) => ConstrainedBox(
+                constraints: constraints,
+                child: HtmlElementView.fromTagName(
+                  tagName: 'div',
+                  onElementCreated: (element) {
+                    element as web.HTMLElement;
+                    element
+                      ..style.width = '100%'
+                      ..style.height = '100%'
+                      ..id = _highChartsId;
+                  },
+                )))
         : SizedBox(
             height: widget.size!.height,
             width: widget.size!.width,
