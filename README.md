@@ -1,6 +1,5 @@
 <p align="center">
-<img src="https://i.ibb.co/GnKh9tp/kisspng-highsoft-highcharts-data-visualization-technology-crisp-5b0bc0d5cc2c53-729988461527496917836.jpg" />
-</p>
+<img src="https://raw.githubusercontent.com/senthilnasa/high_chart/master/img/high_chart_logo.jpg"></p>
 
 
 [![pub package](https://img.shields.io/pub/v/high_chart.svg?label=high_chart&color=blue)](https://pub.dev/packages/high_chart)
