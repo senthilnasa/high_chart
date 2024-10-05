@@ -1,6 +1,6 @@
-import 'dart:html' as html;
+import 'package:web/web.dart' as html;
 import 'dart:math';
-import 'dart:ui' as ui;
+import 'dart:ui_web' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -128,7 +128,7 @@ class HighChartsState extends State<HighCharts> {
   Widget build(BuildContext context) {
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(_highChartsId, (int viewId) {
-      final html.Element htmlElement = html.DivElement()
+      final html.Element htmlElement = html.HTMLDivElement()
         ..style.width = '100%'
         ..style.height = '100%'
         ..setAttribute("id", _highChartsId);

@@ -1,16 +1,15 @@
-<p align="center">
-<img src="https://i.ibb.co/GnKh9tp/kisspng-highsoft-highcharts-data-visualization-technology-crisp-5b0bc0d5cc2c53-729988461527496917836.jpg" />
-</p>
+# high_chart
 
+A chart library based on High Charts (.JS), able to build advanced   charts like Pie chart, linear chart, etc.
 
-[![pub package](https://img.shields.io/pub/v/high_chart.svg?label=high_chart&color=blue)](https://pub.dev/packages/high_chart)
-[![popularity](https://badges.bar/high_chart/popularity)](https://pub.dev/packages/high_chart/score)
-[![pub points](https://badges.bar/high_chart/pub%20points)](https://pub.dev/packages/high_chart/score)
-![building](https://github.com/senthilnasa/high_chart/workflows/build/badge.svg)
+## Getting Started
 
+This project is a starting point for a Flutter
+[plug-in package](https://flutter.dev/to/develop-plugins),
+a specialized package that includes platform-specific implementation code for
+Android and/or iOS.
 
-# High Charts Package for Flutter
-A Flutter package to use [High Charts](https://www.highcharts.com/)
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
 
-## Usage
-To use this plugin, please visit the [Usage documentation](https://github.com/senthilnasa/high_chart/wiki)

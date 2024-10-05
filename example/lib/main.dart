@@ -7,7 +7,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
 }
 
 class ExampleChart extends StatefulWidget {
-  const ExampleChart({Key? key}) : super(key: key);
+  const ExampleChart({super.key});
 
   @override
   ExampleChartState createState() => ExampleChartState();
@@ -102,7 +102,7 @@ class ExampleChartState extends State<ExampleChart> {
           width: 200,
           child: LinearProgressIndicator(),
         ),
-        size: const Size(400, 400),
+        size: const Size(700, 700),
         data: _chartData,
         scripts: const [
           "https://code.highcharts.com/highcharts.js",

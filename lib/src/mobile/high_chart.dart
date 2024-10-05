@@ -1,9 +1,11 @@
-import 'package:flutter/foundation.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_android/webview_flutter_android.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+
+// import 'package:webview_flutter_android/webview_flutter_android.dart';
+// import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 ///
 ///A Chart library based on [High Charts (.JS)](https://www.highcharts.com/)
@@ -111,35 +113,11 @@ class HighChartsState extends State<HighCharts> {
   void initState() {
     super.initState();
 
-    // #docregion platform_features
-    late final PlatformWebViewControllerCreationParams params;
-    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-      params = WebKitWebViewControllerCreationParams(
-        allowsInlineMediaPlayback: true,
-        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
-      );
-    } else {
-      params = const PlatformWebViewControllerCreationParams();
-    }
-    _controller = WebViewController.fromPlatformCreationParams(params);
-
-    if (_controller.platform is AndroidWebViewController) {
-      AndroidWebViewController.enableDebugging(true);
-      (_controller.platform as AndroidWebViewController)
-          .setMediaPlaybackRequiresUserGesture(false);
-      AndroidWebViewController.enableDebugging(kDebugMode);
-    }
-
-    if (_controller.platform is WebKitWebViewController) {
-      WebKitWebViewController webKitWebViewController =
-          _controller.platform as WebKitWebViewController;
-      webKitWebViewController.setInspectable(kDebugMode);
-    }
+    _controller = WebViewController();
 
     _controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..enableZoom(false)
-      ..setBackgroundColor(Colors.transparent)
       ..loadHtmlString(_htmlContent())
       ..setNavigationDelegate(
         NavigationDelegate(onWebResourceError: (err) {
@@ -149,7 +127,8 @@ class HighChartsState extends State<HighCharts> {
         }), onNavigationRequest: ((request) async {
           if (await canLaunchUrlString(request.url)) {
             try {
-              launchUrlString(request.url);
+              launchUrlString(request.url,
+                  mode: LaunchMode.externalApplication);
             } catch (e) {
               debugPrint('High Charts Error ->$e');
             }
@@ -158,6 +137,10 @@ class HighChartsState extends State<HighCharts> {
           return NavigationDecision.navigate;
         })),
       );
+
+    if (!Platform.isMacOS) {
+      _controller.setBackgroundColor(Colors.transparent);
+    }
   }
 
   @override
@@ -189,7 +172,7 @@ class HighChartsState extends State<HighCharts> {
   String _htmlContent() {
     String html = "";
     html +=
-        '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/> </head> <body><div style="height:100%;width:100%;" id="highChartsDiv"></div><script>function senthilnasa(a){ eval(a); return true;}</script>';
+        '''<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/> </head> <body><div style="height:100%;width:100%;" id="highChartsDiv"></div><script>if (typeof senthilnasa !== 'function')function senthilnasa(a){ eval(a); return true;}</script>''';
     for (String src in widget.scripts) {
       html += '<script async="false" src="$src"></script>';
     }

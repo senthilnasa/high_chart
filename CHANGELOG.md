@@ -1,3 +1,7 @@
+## [2.2.0] - 2024-10-05
+- Update packages dependencies to the latest version
+- [Support] Added support for macOS
+
 ## [2.1.0] -2024-02-03
 - [Fixed] Issue with the android gradle version
 - Update packages dependencies to the latest version
