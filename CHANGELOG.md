@@ -1,5 +1,8 @@
-## [2.3.0] - 2024-12-05
+
+## [2.3.1] - 2024-12-05
 - Update packages dependencies to the latest version
+
+## [2.3.0] - 2024-12-05
 - [Support] Added support for windows
 
 ## [2.2.0] - 2024-10-05

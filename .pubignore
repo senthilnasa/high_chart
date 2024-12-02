@@ -1,5 +1,10 @@
-img/high_chart_logo.jpg
+# IDE-specific files
 .idea/
 high_chart.iml
+
+# Lock files
 pubspec.lock
 example/pubspec.lock
+
+# Optional: Exclude unnecessary assets
+img/high_chart_logo.jpg
