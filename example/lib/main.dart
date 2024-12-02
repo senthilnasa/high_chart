@@ -97,18 +97,38 @@ class ExampleChartState extends State<ExampleChart> {
         centerTitle: true,
         title: const Text('High Charts Example App'),
       ),
-      body: HighCharts(
-        loader: const SizedBox(
-          width: 200,
-          child: LinearProgressIndicator(),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            HighCharts(
+              loader: const SizedBox(
+                width: 200,
+                child: LinearProgressIndicator(),
+              ),
+              size: const Size(700, 450),
+              data: _chartData,
+              scripts: const [
+                "https://code.highcharts.com/highcharts.js",
+                'https://code.highcharts.com/modules/networkgraph.js',
+                'https://code.highcharts.com/modules/exporting.js',
+              ],
+            ),
+            HighCharts(
+              loader: const SizedBox(
+                width: 200,
+                child: LinearProgressIndicator(),
+              ),
+              size: const Size(700, 450),
+              data: _chartData,
+              scripts: const [
+                "https://code.highcharts.com/highcharts.js",
+                'https://code.highcharts.com/modules/networkgraph.js',
+                'https://code.highcharts.com/modules/exporting.js',
+              ],
+            ),
+          ],
         ),
-        size: const Size(700, 700),
-        data: _chartData,
-        scripts: const [
-          "https://code.highcharts.com/highcharts.js",
-          'https://code.highcharts.com/modules/networkgraph.js',
-          'https://code.highcharts.com/modules/exporting.js',
-        ],
       ),
     );
   }
