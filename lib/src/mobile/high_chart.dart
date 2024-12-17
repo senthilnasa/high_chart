@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -11,12 +12,14 @@ import 'package:webview_flutter/webview_flutter.dart';
 ///A Chart library based on [High Charts (.JS)](https://www.highcharts.com/)
 ///
 class HighCharts extends StatefulWidget {
-  const HighCharts(
-      {required this.data,
-      required this.size,
-      this.loader = const Center(child: CircularProgressIndicator()),
-      this.scripts = const [],
-      super.key});
+  const HighCharts({
+    required this.data,
+    required this.size,
+    this.loader = const Center(child: CircularProgressIndicator()),
+    this.networkScripts = const [],
+    this.localScripts = const [],
+    super.key,
+  });
 
   ///Custom `loader` widget, until script is loaded
   ///
@@ -99,7 +102,8 @@ class HighCharts extends StatefulWidget {
   ///</head>
   ///```
   ///
-  final List<String> scripts;
+  final List<String> networkScripts;
+  final List<String> localScripts;
   @override
   HighChartsState createState() => HighChartsState();
 }
@@ -122,13 +126,19 @@ class HighChartsState extends State<HighCharts> {
       ..setNavigationDelegate(
         NavigationDelegate(onWebResourceError: (err) {
           debugPrint(err.toString());
-        }, onPageFinished: ((url) {
+        }, onPageFinished: ((url) async {
+          for (String src in widget.localScripts) {
+            String script = await rootBundle.loadString(src);
+            _controller.runJavaScript(script);
+          }
           _loadData();
         }), onNavigationRequest: ((request) async {
           if (await canLaunchUrlString(request.url)) {
             try {
-              launchUrlString(request.url,
-                  mode: LaunchMode.externalApplication);
+              launchUrlString(
+                request.url,
+                mode: LaunchMode.externalApplication,
+              );
             } catch (e) {
               debugPrint('High Charts Error ->$e');
             }
@@ -147,7 +157,8 @@ class HighChartsState extends State<HighCharts> {
   void didUpdateWidget(covariant HighCharts oldWidget) {
     if (oldWidget.data != widget.data ||
         oldWidget.size != widget.size ||
-        oldWidget.scripts != widget.scripts) {
+        oldWidget.localScripts != widget.localScripts ||
+        oldWidget.networkScripts != widget.networkScripts) {
       _controller.loadHtmlString(_htmlContent());
     }
     super.didUpdateWidget(oldWidget);
@@ -173,7 +184,7 @@ class HighChartsState extends State<HighCharts> {
     String html = "";
     html +=
         '''<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/> </head> <body><div style="height:100%;width:100%;" id="highChartsDiv"></div><script>if (typeof senthilnasa !== 'function')function senthilnasa(a){ eval(a); return true;}</script>''';
-    for (String src in widget.scripts) {
+    for (String src in widget.networkScripts) {
       html += '<script async="false" src="$src"></script>';
     }
     html += '</body></html>';

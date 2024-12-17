@@ -1,4 +1,4 @@
-library highcharts_js_web;
+library;
 
 import 'package:js/js.dart';
 

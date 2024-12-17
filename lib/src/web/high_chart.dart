@@ -14,7 +14,8 @@ class HighCharts extends StatefulWidget {
       {required this.data,
       required this.size,
       this.loader = const CircularProgressIndicator(),
-      this.scripts = const [],
+      this.networkScripts = const [],
+      this.localScripts = const [],
       super.key});
 
   ///Custom `loader` widget, until script is loaded
@@ -98,7 +99,8 @@ class HighCharts extends StatefulWidget {
   ///</head>
   ///```
   ///
-  final List<String> scripts;
+  final List<String> networkScripts;
+  final List<String> localScripts;
   @override
   HighChartsState createState() => HighChartsState();
 }
@@ -111,7 +113,8 @@ class HighChartsState extends State<HighCharts> {
   void didUpdateWidget(covariant HighCharts oldWidget) {
     if (oldWidget.data != widget.data ||
         oldWidget.size != widget.size ||
-        oldWidget.scripts != widget.scripts ||
+        oldWidget.networkScripts != widget.networkScripts ||
+        oldWidget.localScripts != widget.localScripts ||
         oldWidget.loader != widget.loader) {
       _load();
     }

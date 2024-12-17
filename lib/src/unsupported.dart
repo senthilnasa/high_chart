@@ -6,12 +6,14 @@ import 'package:flutter/material.dart';
 ///A Chart library based on [High Charts (.JS)](https://www.highcharts.com/)
 ///
 class HighCharts extends StatefulWidget {
-  const HighCharts(
-      {required this.data,
-      required this.size,
-      this.loader = const CircularProgressIndicator(),
-      this.scripts = const [],
-      super.key});
+  const HighCharts({
+    required this.data,
+    required this.size,
+    this.loader = const CircularProgressIndicator(),
+    this.networkScripts = const [],
+    this.localScripts = const [],
+    super.key,
+  });
 
   ///Custom `loader` widget, until script is loaded
   ///
@@ -94,7 +96,9 @@ class HighCharts extends StatefulWidget {
   ///</head>
   ///```
   ///
-  final List<String> scripts;
+  final List<String> networkScripts;
+  final List<String> localScripts;
+
   @override
   HighChartsState createState() => HighChartsState();
 
