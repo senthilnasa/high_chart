@@ -103,7 +103,9 @@ class HighChartsState extends State<HighCharts> {
       return SizedBox(
         height: widget.size.height,
         width: widget.size.width,
-        child: const Text('Unsupported Platform'),
+        child: Center(
+          child: const Text('Unsupported Platform'),
+        ),
       );
     }
   }

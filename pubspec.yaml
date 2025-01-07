@@ -43,5 +43,5 @@ flutter:
       windows:
         pluginClass: HighChartPluginCApi
       web:
-        pluginClass: HighChartWeb
+        pluginClass: HighChartPlatformInterface
         fileName: high_chart_web.dart
