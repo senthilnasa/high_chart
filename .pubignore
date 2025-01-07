@@ -1,10 +1,35 @@
-# IDE-specific files
-.idea/
-high_chart.iml
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
 
-# Lock files
-pubspec.lock
-example/pubspec.lock
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+# Libraries should not include pubspec.lock, per https://dart.dev/guides/libraries/private-files#pubspeclock.
+/pubspec.lock
+**/doc/api/
+.dart_tool/
+.packages
+build/
+
+# FVM Version Cache
+.fvm/
 
 # Optional: Exclude unnecessary assets
-img/high_chart_logo.jpg
+img/
