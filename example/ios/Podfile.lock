@@ -1,0 +1,41 @@
+PODS:
+  - Flutter (1.0.0)
+  - high_chart (0.0.1):
+    - Flutter
+  - integration_test (0.0.1):
+    - Flutter
+  - url_launcher_ios (0.0.1):
+    - Flutter
+  - webview_flutter_wkwebview (0.0.1):
+    - Flutter
+    - FlutterMacOS
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - high_chart (from `.symlinks/plugins/high_chart/ios`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  high_chart:
+    :path: ".symlinks/plugins/high_chart/ios"
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/darwin"
+
+SPEC CHECKSUMS:
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  high_chart: b5e862c8a7704d30f589bdba6ed49ef709cf2e10
+  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
+  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
+  webview_flutter_wkwebview: 0982481e3d9c78fd5c6f62a002fcd24fc791f1e4
+
+PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+
+COCOAPODS: 1.16.2

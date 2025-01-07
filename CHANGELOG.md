@@ -1,3 +1,8 @@
+## [2.4.0] - 2025-01-07
+- [Support] Added support for macos
+- [Support] Added support for local file script
+- Update packages dependencies to the latest version
+
 
 ## [2.3.1] - 2024-12-05
 - Update packages dependencies to the latest version
