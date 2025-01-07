@@ -108,7 +108,7 @@ class ExampleChartState extends State<ExampleChart> {
               ),
               size: const Size(700, 450),
               data: _chartData,
-              scripts: const [
+              networkScripts: const [
                 "https://code.highcharts.com/highcharts.js",
                 'https://code.highcharts.com/modules/networkgraph.js',
                 'https://code.highcharts.com/modules/exporting.js',
@@ -121,10 +121,10 @@ class ExampleChartState extends State<ExampleChart> {
               ),
               size: const Size(700, 450),
               data: _chartData,
-              scripts: const [
-                "https://code.highcharts.com/highcharts.js",
-                'https://code.highcharts.com/modules/networkgraph.js',
-                'https://code.highcharts.com/modules/exporting.js',
+              localScripts: const [
+                'res/highcharts.js',
+                'res/exporting.js',
+                'res/networkgraph.js',
               ],
             ),
           ],

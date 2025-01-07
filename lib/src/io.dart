@@ -6,122 +6,98 @@ import 'mobile/high_chart.dart' as mobile;
 import 'windows/high_chart.dart' as windows;
 
 ///
-///A Chart library based on [High Charts (.JS)](https://www.highcharts.com/)
+/// A Chart library for Flutter based on [High Charts (.JS)](https://www.highcharts.com/).
+///
+/// This library uses `WebView` to render High Charts with data and configuration provided by the user.
+/// It supports Android, iOS, Web, Windows, and MacOS platforms.
+/// For the Web platform, High Charts scripts need to be included in the `web/index.html` file.
 ///
 class HighCharts extends StatefulWidget {
-  const HighCharts(
-      {required this.data,
-      required this.size,
-      this.loader = const CircularProgressIndicator(),
-      this.scripts = const [],
-      super.key});
+  const HighCharts({
+    required this.data, // Chart data in JSON format
+    required this.size, // Size of the chart (height and width)
+    this.loader = const Center(
+        child:
+            CircularProgressIndicator()), // Loader widget while the chart loads
+    this.networkScripts = const [], // Network-based JS scripts for High Charts
+    this.localScripts = const [], // Local JS scripts for High Charts
+    this.scripts = const [], // Deprecated: Combined list of JS scripts
+    super.key,
+  });
 
-  ///Custom `loader` widget, until script is loaded
-  ///
-  ///Has no effect on Web
-  ///
-  ///Defaults to `CircularProgressIndicator`
+  /// A custom loader widget displayed until the chart is fully loaded.
+  /// Defaults to a `CircularProgressIndicator`. This setting has no effect on the Web platform.
   final Widget loader;
 
-  ///Chart data
+  /// Chart data and configuration in JSON format.
   ///
-  ///(use `jsonEncode` if the data is in `Map<String,dynamic>`)
-  ///
-  ///Reference: [High Charts API](https://api.highcharts.com/highcharts)
-  ///
-  ///```dart
-  ///String chart_data = '''{
-  ///      title: {
-  ///          text: 'Combination chart'
-  ///      },
-  ///      xAxis: {
-  ///          categories: ['Apples', 'Oranges', 'Pears', 'Bananas', 'Plums']
-  ///      },
-  ///      labels: {
-  ///          items: [{
-  ///              html: 'Total fruit consumption',
-  ///              style: {
-  ///                  left: '50px',
-  ///                  top: '18px',
-  ///                  color: (
-  ///                      Highcharts.defaultOptions.title.style &&
-  ///                      Highcharts.defaultOptions.title.style.color
-  ///                  ) || 'black'
-  ///              }
-  ///          }]
-  ///      },
-  ///
-  ///      ...
-  ///
-  ///    }''';
-  ///
-  ///```
-  ///
-  ///Reference: [High Charts API](https://api.highcharts.com/highcharts)
+  /// Example:
+  /// ```dart
+  /// String chartData = '''
+  /// {
+  ///   title: { text: 'Sample Chart' },
+  ///   xAxis: { categories: ['A', 'B', 'C'] },
+  ///   series: [{ data: [1, 2, 3] }]
+  /// }
+  /// ''';
+  /// ```
+  /// Reference: [High Charts API](https://api.highcharts.com/highcharts)
   final String data;
 
-  ///Chart size
+  /// Dimensions of the chart widget. Both height and width are required.
   ///
-  ///Height and width of the chart is required
-  ///
-  ///```dart
-  ///Size size = Size(400, 400);
-  ///```
+  /// Example:
+  /// ```dart
+  /// Size chartSize = Size(400, 300);
+  /// ```
   final Size size;
 
-  ///Scripts to be loaded
+  /// List of URLs pointing to High Charts JavaScript files.
   ///
-  ///Url's of the hightchart js scripts.
-  ///
-  ///Reference: [Full Scripts list](https://code.highcharts.com/)
-  ///
-  ///or use any CDN hosted script
-  ///
-  ///### For `android` and `ios` platforms, the scripts must be provided
-  ///
-  ///```dart
-  ///List<String> scripts = [
-  ///  'https://code.highcharts.com/highcharts.js',
-  ///  'https://code.highcharts.com/modules/exporting.js',
-  ///  'https://code.highcharts.com/modules/export-data.js'
+  /// Reference: [High Charts Scripts](https://code.highcharts.com/)
+  /// Example:
+  /// ```dart
+  /// List<String> scripts = [
+  ///   'https://code.highcharts.com/highcharts.js',
+  ///   'https://code.highcharts.com/modules/exporting.js'
   /// ];
   /// ```
-  ///
-  ///### For `web` platform, the scripts must be provided in `web/index.html`
-  ///
-  ///```html
-  ///<head>
-  ///   <script src="https://code.highcharts.com/highcharts.js"></script>
-  ///   <script src="https://code.highcharts.com/modules/exporting.js"></script>
-  ///   <script src="https://code.highcharts.com/modules/export-data.js"></script>
-  ///</head>
-  ///```
-  ///
+  final List<String> networkScripts;
+
+  /// List of locally stored High Charts JavaScript files to be loaded.
+  /// Example:
+  /// ```dart
+  /// List<String> localScripts = ['assets/highcharts.js'];
+  /// ```
+  final List<String> localScripts;
+
+  /// Deprecated: Combined list of scripts. Use `networkScripts` or `localScripts` instead.
+  @Deprecated('Use this instead: `networkScripts` or `localScripts`')
   final List<String> scripts;
+
   @override
   HighChartsState createState() => HighChartsState();
-
-  String? getPlatformVersion() {
-    return Platform.operatingSystemVersion;
-  }
 }
 
 class HighChartsState extends State<HighCharts> {
   @override
   Widget build(BuildContext context) {
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
       return mobile.HighCharts(
         data: widget.data,
         size: widget.size,
         loader: widget.loader,
-        scripts: widget.scripts,
+        networkScripts: widget.networkScripts,
+        localScripts: widget.localScripts,
       );
     } else if (Platform.isWindows) {
       return windows.HighCharts(
         data: widget.data,
         size: widget.size,
         loader: widget.loader,
-        scripts: widget.scripts,
+        scripts: widget.networkScripts,
+        networkScripts: widget.networkScripts,
+        localScripts: widget.localScripts,
       );
     } else {
       return SizedBox(
