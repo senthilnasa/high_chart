@@ -18,6 +18,7 @@ class HighCharts extends StatefulWidget {
     this.localScripts = const [], // Local JS scripts for High Charts
     this.scripts = const [], // Deprecated: Combined list of JS scripts
     super.key,
+    this.themeMode = ThemeMode.system, // Theme mode for the chart
   });
 
   /// A custom loader widget displayed until the chart is fully loaded.
@@ -70,6 +71,13 @@ class HighCharts extends StatefulWidget {
   @Deprecated('Use this instead: `networkScripts` or `localScripts`')
   final List<String> scripts;
 
+  /// Theme mode for the chart.
+  /// It can be set to `ThemeMode.system`, `ThemeMode.light`, or `ThemeMode.dark`.
+  /// ```dart
+  /// themeMode = ThemeMode.system,
+  /// ```
+  /// This property is used to set the theme of the chart.
+  final ThemeMode themeMode;
   @override
   HighChartsState createState() => HighChartsState();
 }

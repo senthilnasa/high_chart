@@ -127,6 +127,20 @@ class ExampleChartState extends State<ExampleChart> {
                 'res/networkgraph.js',
               ],
             ),
+            HighCharts(
+              loader: const SizedBox(
+                width: 200,
+                child: LinearProgressIndicator(),
+              ),
+              size: const Size(700, 450),
+              data: _chartData,
+              localScripts: const [
+                'res/highcharts.js',
+                'res/exporting.js',
+                'res/networkgraph.js',
+              ],
+              themeMode: ThemeMode.light,
+            ),
           ],
         ),
       ),

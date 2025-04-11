@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:web/web.dart' as html;
 import 'dart:math';
 import 'dart:ui_web' as ui;
@@ -25,6 +27,7 @@ class HighCharts extends StatefulWidget {
     this.localScripts = const [], // Local JS scripts for High Charts
     this.scripts = const [], // Deprecated: Combined list of JS scripts
     super.key,
+    this.themeMode = ThemeMode.system, // Theme mode for the chart
   });
 
   /// A custom loader widget displayed until the chart is fully loaded.
@@ -76,6 +79,14 @@ class HighCharts extends StatefulWidget {
   @Deprecated('Use this instead: `networkScripts` or `localScripts`')
   final List<String> scripts;
 
+  /// Theme mode for the chart.
+  /// It can be set to `ThemeMode.system`, `ThemeMode.light`, or `ThemeMode.dark`.
+  /// ```dart
+  /// themeMode = ThemeMode.system,
+  /// ```
+  /// This property is used to set the theme of the chart.
+  final ThemeMode themeMode;
+
   @override
   HighChartsState createState() => HighChartsState();
 }
@@ -104,12 +115,20 @@ class HighChartsState extends State<HighCharts> {
 
   @override
   Widget build(BuildContext context) {
+    String themeClass = "highcharts-light";
+    if (widget.themeMode == ThemeMode.dark) {
+      themeClass = "highcharts-dark";
+    } else if (widget.themeMode == ThemeMode.system &&
+        PlatformDispatcher.instance.platformBrightness == Brightness.dark) {
+      themeClass = "highcharts-dark";
+    }
     // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(_highChartsId, (int viewId) {
       final html.Element htmlElement = html.HTMLDivElement()
         ..style.width = '100%'
         ..style.height = '100%'
-        ..setAttribute("id", _highChartsId);
+        ..setAttribute("id", _highChartsId)
+        ..setAttribute("class", themeClass);
       return htmlElement;
     });
 
@@ -121,6 +140,7 @@ class HighChartsState extends State<HighCharts> {
   }
 
   void _load() {
+    _loadHighChartCss();
     // Load local scripts
     for (final script in widget.localScripts) {
       loadScript(script);
@@ -155,6 +175,37 @@ class HighChartsState extends State<HighCharts> {
       debugPrint('HighCharts: Script loaded: $scriptUrl');
     } else {
       debugPrint('HighCharts: Script already loaded: $scriptUrl');
+    }
+  }
+
+  _loadHighChartCss() {
+    final web.StyleSheetList styles = web.document.styleSheets;
+    bool cssExists = false;
+    if (styles.length == 0) {
+      // No stylesheets found
+      cssExists = false;
+    } else {
+      for (var i = 0; i < styles.length; i++) {
+        final style = styles.item(i);
+        if (style == null) continue;
+        if (style.href?.startsWith(
+                'https://code.highcharts.com/css/highcharts.css') ==
+            true) {
+          cssExists = true;
+          break;
+        }
+      }
+
+      // If CSS does not exist, create and append it
+      if (!cssExists) {
+        final linkElement = web.HTMLLinkElement();
+        linkElement.href = 'https://code.highcharts.com/css/highcharts.css';
+        linkElement.rel = 'stylesheet';
+        web.document.head?.append(linkElement);
+        debugPrint('HighCharts: CSS loaded');
+      } else {
+        debugPrint('HighCharts: CSS already loaded');
+      }
     }
   }
 }

@@ -22,6 +22,7 @@ class HighCharts extends StatefulWidget {
     this.networkScripts = const [], // Network-based JS scripts for High Charts
     this.localScripts = const [], // Local JS scripts for High Charts
     this.scripts = const [], // Deprecated: Combined list of JS scripts
+    this.themeMode = ThemeMode.system, // Theme mode for the chart
     super.key,
   });
 
@@ -75,6 +76,14 @@ class HighCharts extends StatefulWidget {
   @Deprecated('Use this instead: `networkScripts` or `localScripts`')
   final List<String> scripts;
 
+  /// Theme mode for the chart.
+  /// It can be set to `ThemeMode.system`, `ThemeMode.light`, or `ThemeMode.dark`.
+  /// ```dart
+  /// themeMode = ThemeMode.system,
+  /// ```
+  /// This property is used to set the theme of the chart.
+  final ThemeMode themeMode;
+
   @override
   HighChartsState createState() => HighChartsState();
 }
@@ -89,6 +98,7 @@ class HighChartsState extends State<HighCharts> {
         loader: widget.loader,
         networkScripts: widget.networkScripts,
         localScripts: widget.localScripts,
+        themeMode: widget.themeMode,
       );
     } else if (Platform.isWindows) {
       return windows.HighCharts(
@@ -98,6 +108,7 @@ class HighChartsState extends State<HighCharts> {
         scripts: widget.networkScripts,
         networkScripts: widget.networkScripts,
         localScripts: widget.localScripts,
+        themeMode: widget.themeMode,
       );
     } else {
       return SizedBox(

@@ -1,6 +1,6 @@
 library;
 
-import 'package:js/js.dart';
+import 'dart:js_interop';
 
 ///
 /// A JavaScript module for eval function.
