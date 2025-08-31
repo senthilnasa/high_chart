@@ -178,7 +178,7 @@ class HighChartsState extends State<HighCharts> {
     }
   }
 
-  _loadHighChartCss() {
+  void _loadHighChartCss() {
     final web.StyleSheetList styles = web.document.styleSheets;
     bool cssExists = false;
     if (styles.length == 0) {
