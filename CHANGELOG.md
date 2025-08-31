@@ -1,69 +1,72 @@
-## [2.5.1] - 2025-08-01 
+# Changelog
 
-- Update packages dependencies to the latest version
+All notable changes to the High Chart package will be documented in this file.
 
-## [2.5.0] - 2025-04-01
+## [2.5.1]
+### Maintenance
+- Updated package dependencies to the latest version
 
-- [Support] Added Dart support for all platforms
-  
-## [2.4.1] - 2025-01-07
+## [2.5.0]
+### Features
+- Added full Dart support across all platforms
 
-- [Fixed] Issue with the web HighChartPlatformInterface not being registered
+## [2.4.1]
+### Fixes
+- Fixed issue with the web HighChartPlatformInterface registration
 
-## [2.4.0] - 2025-01-07
+## [2.4.0]
+### Features
+- Added support for macOS platform
+- Added support for local file scripts
+### Maintenance
+- Updated package dependencies to the latest version
 
-- [Support] Added support for macos
-- [Support] Added support for local file script
-- Update packages dependencies to the latest version
+## [2.3.1]
+### Maintenance
+- Updated package dependencies to the latest version
 
+## [2.3.0]
+### Features
+- Added support for Windows platform
 
-## [2.3.1] - 2024-12-05
+## [2.2.0]
+### Features
+- Added support for macOS platform
+### Maintenance
+- Updated package dependencies to the latest version
 
-- Update packages dependencies to the latest version
-
-## [2.3.0] - 2024-12-05
-
-- [Support] Added support for windows
-
-## [2.2.0] - 2024-10-05
-
-- Update packages dependencies to the latest version
-- [Support] Added support for macOS
-
-## [2.1.0] -2024-02-03
-
-- [Fixed] Issue with the android gradle version
-- Update packages dependencies to the latest version
-- [Fixed] Issue with the chart not rendering in the webview
-
+## [2.1.0]
+### Fixes
+- Fixed issue with Android Gradle version
+- Fixed chart rendering issue in WebView
+### Maintenance
+- Updated package dependencies to the latest version
 
 ## [2.0.3]
-
-- [Fixed] Loading Issue in IoS 
-- Update packages dependencies to  the latest version 
-
+### Fixes
+- Fixed loading issue in iOS
+### Maintenance
+- Updated package dependencies to the latest version
 
 ## [2.0.2]
-
-- Update packages dependencies to  the latest version.
-
+### Maintenance
+- Updated package dependencies to the latest version
 
 ## [2.0.1]
+### Fixes
+- Fixed Highcharts link behavior to open in external browser instead of WebView
 
-- [Fixed] Prevented highchart link to open within webview and redirecting to broswer.
+## [1.2.0]
+### Features
+- Added null safety support
 
-## [1.2.0] - 2021-06-05
+## [1.0.1]
+### Documentation
+- Updated README.md
 
-- Update to Null safety
+## [1.0.0]
+### Features
+- Initial stable release of High Chart
 
-## [1.0.1] - 2021-01-16
-
-- update in README.md
-
-## [1.0.0] - 2021-01-16
-
-- stable release of high_chart
-
-## [0.0.1] - 2020-01-15
-
+## [0.0.1]
 - Initial release
