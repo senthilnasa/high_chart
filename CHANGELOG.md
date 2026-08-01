@@ -2,6 +2,12 @@
 
 All notable changes to the High Chart package will be documented in this file.
 
+## [2.5.2]
+### Maintenance
+- Updated package dependencies to the latest version
+### Documentation
+- Rewrote README with clearer usage examples, feature overview, and platform support table
+
 ## [2.5.1]
 ### Maintenance
 - Updated package dependencies to the latest version

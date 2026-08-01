@@ -1,22 +1,53 @@
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:high_chart/high_chart.dart';
 
 void main() {
-  const MethodChannel channel = MethodChannel('high_chart');
+  group('HighCharts widget configuration', () {
+    test('exposes the values passed to its constructor', () {
+      const data = '{"title": {"text": "Test"}}';
+      const size = Size(400, 300);
+      const networkScripts = ['https://code.highcharts.com/highcharts.js'];
+      const localScripts = ['res/highcharts.js'];
 
-  TestWidgetsFlutterBinding.ensureInitialized();
+      const chart = HighCharts(
+        data: data,
+        size: size,
+        networkScripts: networkScripts,
+        localScripts: localScripts,
+        themeMode: ThemeMode.dark,
+      );
 
-  setUp(() {
-    channel.setMethodCallHandler((MethodCall methodCall) async {
-      return '42';
+      expect(chart.data, data);
+      expect(chart.size, size);
+      expect(chart.networkScripts, networkScripts);
+      expect(chart.localScripts, localScripts);
+      expect(chart.themeMode, ThemeMode.dark);
     });
-  });
 
-  tearDown(() {
-    channel.setMethodCallHandler(null);
-  });
+    test(
+        'defaults to empty script lists, system theme and a spinner loader',
+        () {
+      const chart = HighCharts(
+        data: '{}',
+        size: Size(100, 100),
+      );
 
-  test('getPlatformVersion', () {
-    // print("Testing Data");
+      expect(chart.networkScripts, isEmpty);
+      expect(chart.localScripts, isEmpty);
+      expect(chart.themeMode, ThemeMode.system);
+      expect(chart.loader, isA<Center>());
+    });
+
+    test('accepts a custom loader widget', () {
+      const loader = SizedBox(width: 10, height: 10);
+      const chart = HighCharts(
+        data: '{}',
+        size: Size(100, 100),
+        loader: loader,
+      );
+
+      expect(chart.loader, same(loader));
+    });
   });
 }
