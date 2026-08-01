@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:webview_windows/webview_windows.dart';
 
 ///
@@ -23,6 +26,8 @@ class HighCharts extends StatefulWidget {
     this.localScripts = const [], // Local JS scripts for High Charts
     this.scripts = const [], // Deprecated: Combined list of JS scripts
     this.themeMode = ThemeMode.system, // Theme mode for the chart
+    this.globalOptions, // Options applied via Highcharts.setOptions()
+    this.onEvent, // Callback for events sent from the chart via sendToFlutter()
     super.key,
   });
 
@@ -76,6 +81,35 @@ class HighCharts extends StatefulWidget {
   @Deprecated('Use this instead: `networkScripts` or `localScripts`')
   final List<String> scripts;
 
+  /// Global Highcharts options applied via `Highcharts.setOptions()` before
+  /// the chart is created. Useful for settings that live outside a single
+  /// chart's configuration, such as `lang`.
+  ///
+  /// Example:
+  /// ```dart
+  /// String globalOptions = '''{
+  ///   lang: { decimalPoint: ',', thousandsSep: '.' }
+  /// }''';
+  /// ```
+  /// Reference: [Highcharts.setOptions](https://api.highcharts.com/class-reference/Highcharts#.setOptions)
+  final String? globalOptions;
+
+  /// Invoked whenever the chart's JavaScript calls the injected
+  /// `sendToFlutter(data)` helper, e.g. from a Highcharts event handler.
+  /// [event] is the JSON-decoded payload.
+  ///
+  /// Example:
+  /// ```dart
+  /// xAxis: {
+  ///   events: {
+  ///     setExtremes: function (e) {
+  ///       sendToFlutter({ min: e.min, max: e.max });
+  ///     }
+  ///   }
+  /// }
+  /// ```
+  final void Function(dynamic event)? onEvent;
+
   /// Theme mode for the chart.
   /// It can be set to `ThemeMode.system`, `ThemeMode.light`, or `ThemeMode.dark`.
   /// ```dart
@@ -91,9 +125,45 @@ class HighCharts extends StatefulWidget {
 // Global key for navigator, used for handling dialog interactions
 final navigatorKey = GlobalKey<NavigatorState>();
 
+// Highcharts' own JS defaults hard-code light-theme colors (e.g. title style
+// color `#333333`) as inline styles, which override the `.highcharts-dark`
+// CSS class entirely. This re-points those inline defaults at the same dark
+// palette the CSS uses, without enabling `styledMode` (which would also
+// silently discard any custom series colors the user sets).
+const String _darkThemeOptions = '''{
+  chart: { style: { color: 'rgb(214,214,214)' } },
+  title: { style: { color: 'rgb(214,214,214)' } },
+  subtitle: { style: { color: 'rgb(173,173,173)' } },
+  caption: { style: { color: 'rgb(173,173,173)' } },
+  legend: {
+    itemStyle: { color: 'rgb(214,214,214)' },
+    itemHoverStyle: { color: 'rgb(255,255,255)' },
+    itemHiddenStyle: { color: 'rgb(133,133,133)' }
+  },
+  xAxis: {
+    labels: { style: { color: 'rgb(214,214,214)' } },
+    title: { style: { color: 'rgb(173,173,173)' } }
+  },
+  yAxis: {
+    labels: { style: { color: 'rgb(214,214,214)' } },
+    title: { style: { color: 'rgb(173,173,173)' } }
+  },
+  tooltip: { style: { color: 'rgb(214,214,214)' } }
+}''';
+
 class HighChartsState extends State<HighCharts> {
   final _controller = WebviewController(); // Controller for managing WebView
   bool _isLoaded = false; // Tracks whether the chart has been loaded
+  StreamSubscription<dynamic>? _webMessageSubscription;
+
+  // Whether the chart should render using the dark palette, resolving
+  // `ThemeMode.system` against the platform's current brightness.
+  bool _isDarkTheme() {
+    return widget.themeMode == ThemeMode.dark ||
+        (widget.themeMode == ThemeMode.system &&
+            PlatformDispatcher.instance.platformBrightness ==
+                Brightness.dark);
+  }
 
   /// Initializes the WebView platform state.
   ///
@@ -106,6 +176,23 @@ class HighChartsState extends State<HighCharts> {
       await _controller.initialize();
       await _controller.setBackgroundColor(Colors.transparent);
       await _controller.setPopupWindowPolicy(WebviewPopupWindowPolicy.deny);
+
+      // Always listen for messages sent from the chart via the injected
+      // `sendToFlutter` JS helper (window.chrome.webview.postMessage):
+      // exported-file payloads are handled internally (saved to disk),
+      // everything else goes to `onEvent`.
+      _webMessageSubscription = _controller.webMessage.listen(
+        (message) {
+          if (message is Map && message['__highChartsExport'] == true) {
+            _handleExport(message);
+            return;
+          }
+          widget.onEvent?.call(message);
+        },
+        onError: (Object error) {
+          debugPrint('High Charts Error -> $error');
+        },
+      );
 
       // Load the HTML content into the WebView
       await _controller.loadStringContent(_htmlContent());
@@ -158,6 +245,12 @@ class HighChartsState extends State<HighCharts> {
   }
 
   @override
+  void dispose() {
+    _webMessageSubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: widget.size.height, // Set widget height
@@ -206,13 +299,8 @@ class HighChartsState extends State<HighCharts> {
 
   /// Generates the HTML content for rendering the chart.
   String _htmlContent() {
-    String themeClass = "highcharts-light";
-    if (widget.themeMode == ThemeMode.dark) {
-      themeClass = "highcharts-dark";
-    } else if (widget.themeMode == ThemeMode.system &&
-        PlatformDispatcher.instance.platformBrightness == Brightness.dark) {
-      themeClass = "highcharts-dark";
-    }
+    final String themeClass =
+        _isDarkTheme() ? "highcharts-dark" : "highcharts-light";
     String html = '''
       <!DOCTYPE html>
       <html>
@@ -223,6 +311,37 @@ class HighChartsState extends State<HighCharts> {
         </head>
         <body>
           <div style="height:100%;width:100%;" id="highChartsDiv" class="$themeClass"></div>
+          <script>if (typeof senthilnasa !== 'function') function senthilnasa(a){ eval(a); return true; }</script>
+          <script>
+            function sendToFlutter(data) {
+              try {
+                if (window.chrome && window.chrome.webview) {
+                  window.chrome.webview.postMessage(JSON.stringify(data));
+                }
+              } catch (e) {}
+            }
+          </script>
+          <script>
+            // The exporting module (with offline-exporting.js) downloads
+            // PNG/JPEG/SVG files as `data:` URIs via a temporary
+            // <a download> click, which this WebView can't turn into a
+            // saved file on its own. Intercept that click and hand the
+            // data off to Flutter to save natively instead.
+            (function() {
+              var originalClick = HTMLAnchorElement.prototype.click;
+              HTMLAnchorElement.prototype.click = function() {
+                if (this.download && typeof this.href === 'string' && this.href.indexOf('data:') === 0) {
+                  sendToFlutter({
+                    __highChartsExport: true,
+                    filename: this.download,
+                    dataUrl: this.href
+                  });
+                  return;
+                }
+                return originalClick.apply(this, arguments);
+              };
+            })();
+          </script>
     ''';
 
     // Add network scripts to the HTML
@@ -236,6 +355,7 @@ class HighChartsState extends State<HighCharts> {
       html += '<script async="false" src="$src"></script>';
     }
 
+    html += '</body></html>';
     return html;
   }
 
@@ -243,9 +363,51 @@ class HighChartsState extends State<HighCharts> {
   Future<String?> getLocalAssetString(String path) async {
     try {
       return await rootBundle.loadString(path);
-    } catch (_) {
+    } catch (error) {
+      debugPrint('High Charts Error -> failed to load asset "$path": $error');
       return null; // Return null if the asset is not found
     }
+  }
+
+  // Saves a chart exported as a `data:` URI (from the exporting module) to
+  // disk, and reports the outcome to `onEvent` as
+  // `{event: 'export', status: 'success'|'error', ...}`.
+  Future<void> _handleExport(Map<dynamic, dynamic> payload) async {
+    final String? filename = payload['filename'] as String?;
+    final String? dataUrl = payload['dataUrl'] as String?;
+    final int commaIndex = dataUrl?.indexOf(',') ?? -1;
+    if (filename == null || dataUrl == null || commaIndex == -1) {
+      return;
+    }
+
+    try {
+      final bytes = base64Decode(dataUrl.substring(commaIndex + 1));
+      final Directory dir = await _exportSaveDirectory();
+      final File file = File('${dir.path}/$filename');
+      await file.writeAsBytes(bytes);
+      debugPrint('High Charts -> Exported chart to ${file.path}');
+      widget.onEvent
+          ?.call({'event': 'export', 'status': 'success', 'path': file.path});
+    } catch (error) {
+      debugPrint('High Charts Error -> failed to save exported file: $error');
+      widget.onEvent?.call(
+          {'event': 'export', 'status': 'error', 'message': '$error'});
+    }
+  }
+
+  // Where exported files are saved: the real Downloads directory on
+  // Windows, falling back to the app's documents directory if that's ever
+  // unavailable.
+  Future<Directory> _exportSaveDirectory() async {
+    try {
+      final Directory? downloads = await getDownloadsDirectory();
+      if (downloads != null) {
+        return downloads;
+      }
+    } catch (_) {
+      // No downloads directory available; fall through to the fallback.
+    }
+    return getApplicationDocumentsDirectory();
   }
 
   // Load the chart data into the WebView
@@ -255,10 +417,27 @@ class HighChartsState extends State<HighCharts> {
         _isLoaded = true; // Mark the chart as loaded
       });
 
-      // Inject the chart data into the WebView
-      _controller.addScriptToExecuteOnDocumentCreated(
-        "senthilnasa(`Highcharts.chart('highChartsDiv',${widget.data})`);",
-      );
+      // In dark mode, re-point Highcharts' own hard-coded text colors at the
+      // dark palette before applying the user's global options and creating
+      // the chart, so title/legend/axis text stays readable.
+      final String themeOptionsScript =
+          _isDarkTheme() ? "Highcharts.setOptions($_darkThemeOptions);" : '';
+      final String globalOptionsScript = widget.globalOptions != null
+          ? "Highcharts.setOptions(${widget.globalOptions});"
+          : '';
+
+      // Inject the chart data into the WebView. `executeScript` runs
+      // immediately against the already-loaded document, unlike
+      // `addScriptToExecuteOnDocumentCreated` which only applies to future
+      // navigations and would never fire for this page. Errors (e.g. a
+      // syntax mistake in the user's chart `data`) must not crash the app.
+      _controller
+          .executeScript(
+            "$themeOptionsScript$globalOptionsScript Highcharts.chart('highChartsDiv',${widget.data})",
+          )
+          .catchError((Object error) {
+            debugPrint('High Charts Error -> $error');
+          });
     }
   }
 }

@@ -1,14 +1,25 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:high_chart/src/mobile/high_chart.dart';
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
 void main() {
   late FakeWebViewPlatform platform;
+  late Directory tempDir;
 
   setUp(() {
     platform = FakeWebViewPlatform();
     WebViewPlatform.instance = platform;
+    tempDir = Directory.systemTemp.createTempSync('high_chart_export_test');
+    PathProviderPlatform.instance = FakePathProviderPlatform(tempDir);
+  });
+
+  tearDown(() {
+    tempDir.deleteSync(recursive: true);
   });
 
   testWidgets(
@@ -133,6 +144,71 @@ void main() {
     expect(platform.controller!.loadedHtml, contains('highcharts-light'));
   });
 
+  testWidgets(
+      'overrides Highcharts default text colors for dark mode so title/labels stay readable',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HighCharts(
+          data: '{}',
+          size: const Size(300, 300),
+          themeMode: ThemeMode.dark,
+        ),
+      ),
+    );
+
+    platform.controller!.finishLoading();
+    await tester.pump();
+
+    final script = platform.controller!.executedJavaScript.single;
+    // Highcharts hard-codes light-theme colors (e.g. #333333) as inline
+    // styles for title/legend/axis text, which would otherwise render
+    // unreadably against the dark background regardless of the CSS class.
+    expect(script, contains("Highcharts.setOptions({"));
+    expect(script, contains("title: { style: { color: 'rgb(214,214,214)'"));
+    final setOptionsIndex = script.indexOf('Highcharts.setOptions');
+    final chartIndex = script.indexOf('Highcharts.chart');
+    expect(setOptionsIndex, lessThan(chartIndex));
+  });
+
+  testWidgets(
+      'does not override Highcharts default text colors when themeMode is light',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HighCharts(
+          data: '{}',
+          size: const Size(300, 300),
+          themeMode: ThemeMode.light,
+        ),
+      ),
+    );
+
+    platform.controller!.finishLoading();
+    await tester.pump();
+
+    expect(platform.controller!.executedJavaScript.single,
+        isNot(contains('rgb(214,214,214)')));
+  });
+
+  testWidgets('reloads the WebView content when themeMode changes',
+      (tester) async {
+    Widget buildChart(ThemeMode themeMode) => MaterialApp(
+          home: HighCharts(
+            data: '{}',
+            size: const Size(300, 300),
+            themeMode: themeMode,
+          ),
+        );
+
+    await tester.pumpWidget(buildChart(ThemeMode.light));
+    expect(platform.controller!.loadHtmlStringCallCount, 1);
+
+    await tester.pumpWidget(buildChart(ThemeMode.dark));
+    expect(platform.controller!.loadHtmlStringCallCount, 2);
+    expect(platform.controller!.loadedHtml, contains('highcharts-dark'));
+  });
+
   testWidgets('does not crash when a local script asset cannot be found',
       (tester) async {
     await tester.pumpWidget(
@@ -151,6 +227,165 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(find.byType(CircularProgressIndicator), findsNothing);
   });
+
+  testWidgets('applies Highcharts.setOptions() before creating the chart',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HighCharts(
+          data: '{}',
+          size: const Size(300, 300),
+          globalOptions: "{lang: {decimalPoint: ','}}",
+        ),
+      ),
+    );
+
+    platform.controller!.finishLoading();
+    await tester.pump();
+
+    final script = platform.controller!.executedJavaScript.single;
+    final setOptionsIndex = script.indexOf('Highcharts.setOptions');
+    final chartIndex = script.indexOf('Highcharts.chart');
+    expect(setOptionsIndex, greaterThanOrEqualTo(0));
+    expect(setOptionsIndex, lessThan(chartIndex));
+  });
+
+  testWidgets('does not call Highcharts.setOptions() when globalOptions is null',
+      (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HighCharts(
+          data: '{}',
+          size: const Size(300, 300),
+        ),
+      ),
+    );
+
+    platform.controller!.finishLoading();
+    await tester.pump();
+
+    expect(platform.controller!.executedJavaScript.single,
+        isNot(contains('Highcharts.setOptions')));
+  });
+
+  testWidgets(
+      'delivers JSON-decoded events sent from the chart to onEvent',
+      (tester) async {
+    dynamic received;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HighCharts(
+          data: '{}',
+          size: const Size(300, 300),
+          onEvent: (event) => received = event,
+        ),
+      ),
+    );
+
+    platform.controller!.sendChannelMessage('{"min": 1, "max": 5}');
+
+    expect(received, {'min': 1, 'max': 5});
+  });
+
+  testWidgets('falls back to the raw string when the event is not valid JSON',
+      (tester) async {
+    dynamic received;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HighCharts(
+          data: '{}',
+          size: const Size(300, 300),
+          onEvent: (event) => received = event,
+        ),
+      ),
+    );
+
+    platform.controller!.sendChannelMessage('not json');
+
+    expect(received, 'not json');
+  });
+
+  testWidgets(
+      'saves an exported chart to disk and reports success via onEvent',
+      (tester) async {
+    dynamic received;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HighCharts(
+          data: '{}',
+          size: const Size(300, 300),
+          onEvent: (event) => received = event,
+        ),
+      ),
+    );
+
+    final String base64Data = base64Encode(utf8.encode('fake png bytes'));
+    await tester.runAsync(() async {
+      platform.controller!.sendChannelMessage(jsonEncode({
+        '__highChartsExport': true,
+        'filename': 'chart.png',
+        'dataUrl': 'data:image/png;base64,$base64Data',
+      }));
+      // The save happens asynchronously (file I/O); give it a moment.
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    });
+
+    final File savedFile = File('${tempDir.path}/chart.png');
+    expect(savedFile.existsSync(), isTrue);
+    expect(utf8.decode(savedFile.readAsBytesSync()), 'fake png bytes');
+    expect(received, {
+      'event': 'export',
+      'status': 'success',
+      'path': savedFile.path,
+    });
+  });
+
+  testWidgets('does not forward export payloads to onEvent as chart events',
+      (tester) async {
+    final List<dynamic> received = [];
+    await tester.pumpWidget(
+      MaterialApp(
+        home: HighCharts(
+          data: '{}',
+          size: const Size(300, 300),
+          onEvent: received.add,
+        ),
+      ),
+    );
+
+    final String base64Data = base64Encode(utf8.encode('x'));
+    await tester.runAsync(() async {
+      platform.controller!.sendChannelMessage(jsonEncode({
+        '__highChartsExport': true,
+        'filename': 'chart.png',
+        'dataUrl': 'data:image/png;base64,$base64Data',
+      }));
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+    });
+
+    // onEvent should only see the export status report, never the raw
+    // export-request payload itself.
+    expect(received, hasLength(1));
+    expect(received.single, containsPair('event', 'export'));
+  });
+}
+
+/// A [PathProviderPlatform] implementation that always resolves to a
+/// temporary test directory, so export tests never touch the real
+/// filesystem's Downloads/Documents folders.
+class FakePathProviderPlatform extends PathProviderPlatform {
+  FakePathProviderPlatform(this.directory);
+
+  final Directory directory;
+
+  @override
+  Future<String?> getDownloadsPath() async => directory.path;
+
+  @override
+  Future<String?> getApplicationDocumentsPath() async => directory.path;
+
+  @override
+  Future<String?> getExternalStoragePath() async => directory.path;
 }
 
 /// A [WebViewPlatform] implementation that hands out [FakeWebViewController]s
@@ -226,6 +461,27 @@ class FakeWebViewController extends PlatformWebViewController {
 
   @override
   Future<void> setBackgroundColor(Color color) async {}
+
+  @override
+  Future<void> setOnConsoleMessage(
+    void Function(JavaScriptConsoleMessage message) onConsoleMessage,
+  ) async {}
+
+  @override
+  Future<void> addJavaScriptChannel(
+    JavaScriptChannelParams javaScriptChannelParams,
+  ) async {
+    if (javaScriptChannelParams.name == 'HighChartsChannel') {
+      _onMessageReceived = javaScriptChannelParams.onMessageReceived;
+    }
+  }
+
+  /// Simulates the chart's JS calling `sendToFlutter(data)`.
+  void sendChannelMessage(String message) {
+    _onMessageReceived?.call(JavaScriptMessage(message: message));
+  }
+
+  void Function(JavaScriptMessage message)? _onMessageReceived;
 }
 
 class FakeWebViewWidget extends PlatformWebViewWidget {

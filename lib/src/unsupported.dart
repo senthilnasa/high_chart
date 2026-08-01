@@ -19,6 +19,8 @@ class HighCharts extends StatefulWidget {
     this.scripts = const [], // Deprecated: Combined list of JS scripts
     super.key,
     this.themeMode = ThemeMode.system, // Theme mode for the chart
+    this.globalOptions, // Options applied via Highcharts.setOptions()
+    this.onEvent, // Callback for events sent from the chart via sendToFlutter()
   });
 
   /// A custom loader widget displayed until the chart is fully loaded.
@@ -70,6 +72,15 @@ class HighCharts extends StatefulWidget {
   /// Deprecated: Combined list of scripts. Use `networkScripts` or `localScripts` instead.
   @Deprecated('Use this instead: `networkScripts` or `localScripts`')
   final List<String> scripts;
+
+  /// Global Highcharts options applied via `Highcharts.setOptions()` before
+  /// the chart is created. Has no effect on this unsupported platform.
+  final String? globalOptions;
+
+  /// Invoked whenever the chart's JavaScript calls the injected
+  /// `sendToFlutter(data)` helper. Never invoked on this unsupported
+  /// platform.
+  final void Function(dynamic event)? onEvent;
 
   /// Theme mode for the chart.
   /// It can be set to `ThemeMode.system`, `ThemeMode.light`, or `ThemeMode.dark`.

@@ -23,6 +23,8 @@ class HighCharts extends StatefulWidget {
     this.localScripts = const [], // Local JS scripts for High Charts
     this.scripts = const [], // Deprecated: Combined list of JS scripts
     this.themeMode = ThemeMode.system, // Theme mode for the chart
+    this.globalOptions, // Options applied via Highcharts.setOptions()
+    this.onEvent, // Callback for events sent from the chart via sendToFlutter()
     super.key,
   });
 
@@ -76,6 +78,35 @@ class HighCharts extends StatefulWidget {
   @Deprecated('Use this instead: `networkScripts` or `localScripts`')
   final List<String> scripts;
 
+  /// Global Highcharts options applied via `Highcharts.setOptions()` before
+  /// the chart is created. Useful for settings that live outside a single
+  /// chart's configuration, such as `lang`.
+  ///
+  /// Example:
+  /// ```dart
+  /// String globalOptions = '''{
+  ///   lang: { decimalPoint: ',', thousandsSep: '.' }
+  /// }''';
+  /// ```
+  /// Reference: [Highcharts.setOptions](https://api.highcharts.com/class-reference/Highcharts#.setOptions)
+  final String? globalOptions;
+
+  /// Invoked whenever the chart's JavaScript calls the injected
+  /// `sendToFlutter(data)` helper, e.g. from a Highcharts event handler.
+  /// [event] is the JSON-decoded payload.
+  ///
+  /// Example:
+  /// ```dart
+  /// xAxis: {
+  ///   events: {
+  ///     setExtremes: function (e) {
+  ///       sendToFlutter({ min: e.min, max: e.max });
+  ///     }
+  ///   }
+  /// }
+  /// ```
+  final void Function(dynamic event)? onEvent;
+
   /// Theme mode for the chart.
   /// It can be set to `ThemeMode.system`, `ThemeMode.light`, or `ThemeMode.dark`.
   /// ```dart
@@ -99,6 +130,8 @@ class HighChartsState extends State<HighCharts> {
         networkScripts: widget.networkScripts,
         localScripts: widget.localScripts,
         themeMode: widget.themeMode,
+        globalOptions: widget.globalOptions,
+        onEvent: widget.onEvent,
       );
     } else if (Platform.isWindows) {
       return windows.HighCharts(
@@ -109,6 +142,8 @@ class HighChartsState extends State<HighCharts> {
         networkScripts: widget.networkScripts,
         localScripts: widget.localScripts,
         themeMode: widget.themeMode,
+        globalOptions: widget.globalOptions,
+        onEvent: widget.onEvent,
       );
     } else {
       return SizedBox(

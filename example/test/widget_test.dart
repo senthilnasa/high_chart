@@ -5,17 +5,68 @@ import 'package:high_chart_example/main.dart';
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
 
 void main() {
-  setUp(() {
+  setUp(() async {
     WebViewPlatform.instance = _FakeWebViewPlatform();
+    _FakeWebViewController.lastChannelReceiver = null;
   });
 
-  testWidgets('renders the app bar title and every example chart',
+  testWidgets('renders the gallery title and a card for every example',
       (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+    // The default 800x600 test surface is too small for the gallery grid
+    // and would overflow; use a more realistic viewport.
+    await tester.binding.setSurfaceSize(const Size(1200, 2400));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(const HighChartsGalleryApp());
     await tester.pump();
 
-    expect(find.text('High Charts Example App'), findsOneWidget);
-    expect(find.byType(HighCharts), findsNWidgets(3));
+    expect(find.text('High Charts Gallery'), findsOneWidget);
+    expect(find.byType(Card), findsNWidgets(chartExamples.length));
+  });
+
+  testWidgets('opens a chart detail page showing the HighCharts widget',
+      (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 2400));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(const HighChartsGalleryApp());
+    await tester.pump();
+
+    await tester.tap(find.text(chartExamples.first.title));
+    // The chart's loader spinner animates indefinitely in this fake
+    // WebView setup (it never signals page-finished), so pump a bounded
+    // number of frames instead of pumpAndSettle.
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.byType(HighCharts), findsOneWidget);
+  });
+
+  testWidgets(
+      'the Zoom & Events example shows its hint and displays events sent by the chart',
+      (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 2400));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final example =
+        chartExamples.firstWhere((e) => e.title == 'Zoom & Events');
+    expect(example.listensForEvents, isTrue);
+
+    await tester.pumpWidget(const HighChartsGalleryApp());
+    await tester.pump();
+
+    await tester.tap(find.text(example.title));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.text(example.eventHint!), findsOneWidget);
+    expect(find.textContaining('Waiting for an event'), findsOneWidget);
+
+    _FakeWebViewController.lastChannelReceiver
+        ?.call(const JavaScriptMessage(message: '{"min": 1, "max": 5}'));
+    await tester.pump();
+
+    expect(find.textContaining('onEvent received'), findsOneWidget);
   });
 }
 
@@ -69,6 +120,24 @@ class _FakeWebViewController extends PlatformWebViewController {
 
   @override
   Future<void> setBackgroundColor(Color color) async {}
+
+  @override
+  Future<void> setOnConsoleMessage(
+    void Function(JavaScriptConsoleMessage message) onConsoleMessage,
+  ) async {}
+
+  @override
+  Future<void> addJavaScriptChannel(
+    JavaScriptChannelParams javaScriptChannelParams,
+  ) async {
+    if (javaScriptChannelParams.name == 'HighChartsChannel') {
+      lastChannelReceiver = javaScriptChannelParams.onMessageReceived;
+    }
+  }
+
+  /// Captures the most recently registered channel handler so tests can
+  /// simulate the chart's JS calling `sendToFlutter(data)`.
+  static void Function(JavaScriptMessage message)? lastChannelReceiver;
 }
 
 class _FakeWebViewWidget extends PlatformWebViewWidget {
