@@ -2,6 +2,13 @@
 
 All notable changes to the High Chart package will be documented in this file.
 
+## [2.8.1]
+### Fixes
+- Boolean-typed options (e.g. `chart.polar`, `series.visible`) are now properly typed as `bool?` instead of always falling back to `dynamic` — a latent bug in the previous generator affected every boolean-typed field across the ~4,900 generated classes (TypeScript internally represents `boolean` as a union of the `true`/`false` literal types, which tripped the old generator's union-handling before it ever reached its `boolean` check)
+### Changed
+- Rewrote `tool/generate_options/` as a standalone Dart tool: a real tokenizer/parser for the `.d.ts` syntax Highcharts' type definitions use, plus a resolver reimplementing the specific pieces of TypeScript's type-checking this schema depends on (declaration merging, `extends` flattening, alias chasing, union collapsing). No Node.js/npm/TypeScript Compiler API needed to regenerate anymore — run `dart run tool/generate_options/bin/generate.dart`; see `tool/generate_options/README.md` for details, including the (small, enumerated) divergences from the old generator's output
+- Generated classes are now grouped into ~75 files under `lib/src/options/` by Highcharts option module (e.g. `hc_plot_*.dart`, `hc_axis.dart`, `hc_tooltip.dart`) instead of one file per class, cutting the file count from ~4,900 to ~75
+
 ## [2.8.0]
 ### Features
 - Added `options`, a fully typed, IDE-autocompleted alternative to the raw `data` string: `HCOptions` plus ~4,900 generated `HC*Options` classes (one per Highcharts option group and series type, generated against Highcharts 13), covering the full Highcharts option tree. `data` and `options` are mutually exclusive; provide exactly one

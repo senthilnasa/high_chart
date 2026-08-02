@@ -35,7 +35,7 @@ Add `high_chart` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  high_chart: ^2.8.0
+  high_chart: ^2.8.1
 ```
 
 Then fetch the package:

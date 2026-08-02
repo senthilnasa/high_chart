@@ -1,8 +1,0 @@
-{
-  "name": "high_chart-generate-options",
-  "private": true,
-  "description": "Generates lib/src/options/*.dart from Highcharts' own TypeScript definitions. See README.md.",
-  "devDependencies": {
-    "typescript": "5.6.3"
-  }
-}
