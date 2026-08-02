@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:high_chart/high_chart.dart';
@@ -159,68 +161,81 @@ void main() {
     });
   });
 
-  group('HighCharts widget end-to-end: options actually reach the WebView', () {
-    // io.dart (the top-level `HighCharts` this test imports) routes to
-    // mobile/high_chart.dart on this test host, which has no `options`
-    // field of its own — it only ever receives a resolved `data` string.
-    // These tests prove `options` is actually converted and forwarded,
-    // rather than just checking the widget's own properties like the
-    // "HighCharts widget configuration" group above does.
-    late _FakeWebViewPlatform platform;
+  group(
+    'HighCharts widget end-to-end: options actually reach the WebView',
+    () {
+      // io.dart (the top-level `HighCharts` this test imports) routes to
+      // mobile/high_chart.dart on this test host, which has no `options`
+      // field of its own — it only ever receives a resolved `data` string.
+      // These tests prove `options` is actually converted and forwarded,
+      // rather than just checking the widget's own properties like the
+      // "HighCharts widget configuration" group above does.
+      late _FakeWebViewPlatform platform;
 
-    setUp(() {
-      platform = _FakeWebViewPlatform();
-      WebViewPlatform.instance = platform;
-    });
+      setUp(() {
+        platform = _FakeWebViewPlatform();
+        WebViewPlatform.instance = platform;
+      });
 
-    testWidgets(
-        'passes the JSON-encoded options tree to Highcharts.chart() when '
-        'options is used instead of data', (tester) async {
-      const options = HCOptions(
-        title: HCTitleOptions(text: 'From options'),
-        series: [
-          HCSeriesLineOptions(name: 'Revenue', data: [1, 2, 3]),
-        ],
-      );
+      testWidgets(
+          'passes the JSON-encoded options tree to Highcharts.chart() when '
+          'options is used instead of data', (tester) async {
+        const options = HCOptions(
+          title: HCTitleOptions(text: 'From options'),
+          series: [
+            HCSeriesLineOptions(name: 'Revenue', data: [1, 2, 3]),
+          ],
+        );
 
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: HighCharts(
-            options: options,
-            size: Size(300, 300),
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: HighCharts(
+              options: options,
+              size: Size(300, 300),
+            ),
           ),
-        ),
-      );
+        );
 
-      platform.controller!.finishLoading();
-      await tester.pump();
+        platform.controller!.finishLoading();
+        await tester.pump();
 
-      final script = platform.controller!.executedJavaScript.single;
-      expect(script, contains('"title":{"text":"From options"}'));
-      expect(script, contains('"name":"Revenue"'));
-      expect(script, contains('Highcharts.chart(\'highChartsDiv\''));
-    });
+        final script = platform.controller!.executedJavaScript.single;
+        expect(script, contains('"title":{"text":"From options"}'));
+        expect(script, contains('"name":"Revenue"'));
+        expect(script, contains('Highcharts.chart(\'highChartsDiv\''));
+      });
 
-    testWidgets('still passes a raw data string through unchanged',
-        (tester) async {
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: HighCharts(
-            data: "{title: {text: 'From data'}}",
-            size: Size(300, 300),
+      testWidgets('still passes a raw data string through unchanged',
+          (tester) async {
+        await tester.pumpWidget(
+          const MaterialApp(
+            home: HighCharts(
+              data: "{title: {text: 'From data'}}",
+              size: Size(300, 300),
+            ),
           ),
-        ),
-      );
+        );
 
-      platform.controller!.finishLoading();
-      await tester.pump();
+        platform.controller!.finishLoading();
+        await tester.pump();
 
-      expect(
-        platform.controller!.executedJavaScript.single,
-        contains("{title: {text: 'From data'}}"),
-      );
-    });
-  });
+        expect(
+          platform.controller!.executedJavaScript.single,
+          contains("{title: {text: 'From data'}}"),
+        );
+      });
+    },
+    skip: Platform.isAndroid ||
+            Platform.isIOS ||
+            Platform.isMacOS ||
+            Platform.isWindows
+        ? false
+        : 'io.dart only routes to a real WebView-backed implementation on '
+            'Android/iOS/macOS/Windows; this test host (e.g. CI\'s '
+            'ubuntu-latest runner) has none, so there is no WebView for '
+            '`options` to reach — matches the package\'s own documented '
+            'lack of Linux support.',
+  );
 }
 
 /// A [WebViewPlatform] implementation that hands out a [_FakeWebViewController]
