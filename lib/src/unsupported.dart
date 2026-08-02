@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'options/hc_options.dart';
+
 ///
 /// A Chart library for Flutter based on [High Charts (.JS)](https://www.highcharts.com/).
 ///
@@ -9,7 +11,8 @@ import 'package:flutter/material.dart';
 ///
 class HighCharts extends StatefulWidget {
   const HighCharts({
-    required this.data, // Chart data in JSON format
+    this.data, // Chart data in JSON format
+    this.options, // Typed alternative to `data`
     required this.size, // Size of the chart (height and width)
     this.loader = const Center(
         child:
@@ -21,13 +24,20 @@ class HighCharts extends StatefulWidget {
     this.themeMode = ThemeMode.system, // Theme mode for the chart
     this.globalOptions, // Options applied via Highcharts.setOptions()
     this.onEvent, // Callback for events sent from the chart via sendToFlutter()
-  });
+  }) : assert(
+          (data != null) != (options != null),
+          'Provide exactly one of data or options, not both and not '
+          'neither — options silently wins over data if both are set, '
+          'so this is almost always a mistake.',
+        );
 
   /// A custom loader widget displayed until the chart is fully loaded.
   /// Defaults to a `CircularProgressIndicator`. This setting has no effect on the Web platform.
   final Widget loader;
 
   /// Chart data and configuration in JSON format.
+  ///
+  /// Mutually exclusive with [options] — provide exactly one.
   ///
   /// Example:
   /// ```dart
@@ -40,7 +50,13 @@ class HighCharts extends StatefulWidget {
   /// ''';
   /// ```
   /// Reference: [High Charts API](https://api.highcharts.com/highcharts)
-  final String data;
+  final String? data;
+
+  /// Typed, IDE-autocompleted chart configuration, generated from
+  /// Highcharts' own TypeScript definitions. Mutually exclusive with
+  /// [data] — provide exactly one. Has no effect on this unsupported
+  /// platform.
+  final HCOptions? options;
 
   /// Dimensions of the chart widget. Both height and width are required.
   ///

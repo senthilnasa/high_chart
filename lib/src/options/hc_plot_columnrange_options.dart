@@ -1,0 +1,609 @@
+part of 'hc_options.dart';
+
+/// (Highcharts, Highstock) The column range is a cartesian series type with
+class HCPlotColumnrangeOptions implements HCOption {
+  const HCPlotColumnrangeOptions({
+    this.accessibility,
+    this.allowPointSelect,
+    this.animation,
+    this.animationLimit,
+    this.boostBlending,
+    this.boostThreshold,
+    this.borderColor,
+    this.borderRadius,
+    this.borderWidth,
+    this.centerInCategory,
+    this.className,
+    this.clip,
+    this.color,
+    this.colorAxis,
+    this.colorByPoint,
+    this.colorIndex,
+    this.colorKey,
+    this.colors,
+    this.compare,
+    this.compareBase,
+    this.compareStart,
+    this.crisp,
+    this.cropThreshold,
+    this.cumulative,
+    this.cumulativeStart,
+    this.cursor,
+    this.custom,
+    this.dashStyle,
+    this.dataGrouping,
+    this.dataLabels,
+    this.dataMapping,
+    this.dataSorting,
+    this.depth,
+    this.description,
+    this.dragDrop,
+    this.edgeColor,
+    this.edgeWidth,
+    this.enableMouseTracking,
+    this.events,
+    this.findNearestPointBy,
+    this.getExtremesFromAll,
+    this.grouping,
+    this.groupPadding,
+    this.groupZPadding,
+    this.inactiveOtherPoints,
+    this.includeInDataExport,
+    this.keys,
+    this.label,
+    this.lastPrice,
+    this.lastVisiblePrice,
+    this.legendSymbol,
+    this.legendSymbolColor,
+    this.linkedTo,
+    this.maxPointWidth,
+    this.minPointLength,
+    this.navigatorOptions,
+    this.nullInteraction,
+    this.onPoint,
+    this.opacity,
+    this.point,
+    this.pointDescriptionFormat,
+    this.pointDescriptionFormatter,
+    this.pointInterval,
+    this.pointIntervalUnit,
+    this.pointPadding,
+    this.pointPlacement,
+    this.pointRange,
+    this.pointStart,
+    this.pointWidth,
+    this.relativeXValue,
+    this.selected,
+    this.shadow,
+    this.showCheckbox,
+    this.showInLegend,
+    this.showInNavigator,
+    this.skipKeyboardNavigation,
+    this.sonification,
+    this.states,
+    this.stickyTracking,
+    this.tooltip,
+    this.turboThreshold,
+    this.visible,
+    this.zoneAxis,
+    this.zones,
+    this.zoomEnabled,
+  });
+
+  /// (Highcharts, Highstock) Accessibility options for a series.
+  final HCSeriesAccessibilityOptionsObject? accessibility;
+
+  /// (Highcharts, Highstock) Allow this series' points to be selected by
+  final dynamic allowPointSelect;
+
+  /// (Highcharts, Highstock) Enable or disable the initial animation when a
+  final dynamic animation;
+
+  /// (Highcharts, Highstock) For some series, there is a limit that shuts down
+  final num? animationLimit;
+
+  /// (Highcharts, Highstock) Sets the color blending in the boost module.
+  final String? boostBlending;
+
+  /// (Highcharts, Highstock) Set the point threshold for when a series should
+  final num? boostThreshold;
+
+  /// (Highcharts, Highstock, Gantt) The color of the border surrounding each
+  final dynamic borderColor;
+
+  /// (Highcharts, Highstock, Gantt) The corner radius of the border
+  final dynamic borderRadius;
+
+  /// (Highcharts, Highstock, Gantt) The width of the border surrounding each
+  final num? borderWidth;
+
+  /// (Highcharts, Highstock, Gantt) When `true`, the columns will center in
+  final dynamic centerInCategory;
+
+  /// (Highcharts, Highstock) An additional class name to apply to the series'
+  final String? className;
+
+  /// (Highcharts, Highstock) Disable this option to allow series rendering in
+  final dynamic clip;
+
+  /// (Highcharts, Highstock) The main color of the series. In line type series
+  final dynamic color;
+
+  /// (Highcharts, Highstock, Highmaps) When using dual or multiple color axes,
+  final dynamic colorAxis;
+
+  /// (Highcharts, Highstock, Gantt) When using automatic point colors pulled
+  final dynamic colorByPoint;
+
+  /// (Highcharts, Highstock) Styled mode only. A specific color index to use
+  final num? colorIndex;
+
+  /// (Highcharts, Highstock, Highmaps) Determines what data value should be
+  final String? colorKey;
+
+  /// (Highcharts, Highstock, Gantt) A series specific or series type specific
+  final List<dynamic>? colors;
+
+  /// (Highstock) Compare the values of the series against the first non-null,
+  final String? compare;
+
+  /// (Highstock) When compare is `percent`, this option dictates whether to
+  final dynamic compareBase;
+
+  /// (Highstock) Defines if comparison should start from the first point
+  final dynamic compareStart;
+
+  /// (Highcharts, Highstock, Gantt) When true, each point or column edge is
+  final dynamic crisp;
+
+  /// (Highcharts, Highstock, Gantt) When the series contains less points than
+  final num? cropThreshold;
+
+  /// (Highstock) Cumulative Sum feature replaces points' values with the
+  final dynamic cumulative;
+
+  /// (Highstock) Defines if cumulation should start from the first point
+  final dynamic cumulativeStart;
+
+  /// (Highcharts, Highstock) You can set the cursor to "pointer" if you have
+  final String? cursor;
+
+  /// (Highcharts, Highstock) A reserved subspace to store options and values
+  final HCDictionary? custom;
+
+  /// (Highcharts, Highstock) Name of the dash style to use for the graph, or
+  final String? dashStyle;
+
+  /// (Highstock) Data grouping is the concept of sampling the data values into
+  final HCDataGroupingOptionsObject? dataGrouping;
+
+  /// (Highcharts, Highstock) Extended data labels for range series types.
+  final dynamic dataLabels;
+
+  /// (Highcharts, Highstock) The mapping between the data table and the series
+  final HCDataMappingOptionsObject? dataMapping;
+
+  /// (Highcharts, Highstock) Options for series data sorting.
+  final HCPlotColumnrangeDataSortingOptions? dataSorting;
+
+  /// (Highcharts) Depth of the columns in a 3D column chart.
+  final num? depth;
+
+  /// (Highcharts, Highstock) Deprecated. Use
+  final String? description;
+
+  /// (Highcharts, Highstock) The draggable-points module allows points to be
+  final HCSeriesDragDropOptionsObject? dragDrop;
+
+  /// (Highcharts) 3D columns only. The color of the edges. Similar to
+  final String? edgeColor;
+
+  /// (Highcharts) 3D columns only. The width of the colored edges.
+  final num? edgeWidth;
+
+  /// (Highcharts, Highstock) Enable or disable the mouse tracking for a
+  final dynamic enableMouseTracking;
+
+  /// (Highcharts, Highstock) General event handlers for the series items.
+  final HCSeriesEventsOptionsObject? events;
+
+  /// (Highcharts, Highstock) Determines whether the series should look for the
+  final String? findNearestPointBy;
+
+  /// (Highcharts, Highstock, Gantt) Whether to use the Y extremes of the total
+  final dynamic getExtremesFromAll;
+
+  /// (Highcharts, Highstock, Gantt) Whether to group non-stacked columns or to
+  final dynamic grouping;
+
+  /// (Highcharts, Highstock, Gantt) Padding between each value groups, in x
+  final num? groupPadding;
+
+  /// (Highcharts) The spacing between columns on the Z Axis in a 3D chart.
+  final num? groupZPadding;
+
+  /// (Highcharts, Highstock) Highlight only the hovered point and fade the
+  final dynamic inactiveOtherPoints;
+
+  /// (Highcharts, Highstock) When set to `false` will prevent the series data
+  final dynamic includeInDataExport;
+
+  /// (Highcharts, Highstock) An array specifying which option maps to which
+  final List<String>? keys;
+
+  /// (Highcharts, Highstock, Gantt) Series labels are placed as close to the
+  final HCSeriesLabelOptionsObject? label;
+
+  /// (Highstock) The line marks the last price from all points.
+  final HCSeriesLastPriceOptionsObject? lastPrice;
+
+  /// (Highstock) The line marks the last price from visible range of points.
+  final HCSeriesLastVisiblePriceOptionsObject? lastVisiblePrice;
+
+  /// (Highcharts, Highstock) What type of legend symbol to render for this
+  final String? legendSymbol;
+
+  /// (Highcharts, Highstock, Highmaps) Defines the color of the legend symbol
+  final dynamic legendSymbolColor;
+
+  /// (Highcharts, Highstock, Gantt) The id of another series to link to.
+  final String? linkedTo;
+
+  /// (Highcharts, Highstock, Gantt) The maximum allowed pixel width for a
+  final num? maxPointWidth;
+
+  /// (Highcharts, Highstock, Gantt) The minimal height for a column or width
+  final num? minPointLength;
+
+  /// (Highstock) Options for the corresponding navigator series if
+  final HCPlotSeriesOptions? navigatorOptions;
+
+  /// (Highcharts, Highstock) Whether or not data-points with the value of
+  final dynamic nullInteraction;
+
+  /// (Highcharts, Highstock) Options for the _Series on point_ feature. Only
+  final dynamic onPoint;
+
+  /// (Highcharts, Highstock) Opacity of a series parts: line, fill (e.g. area)
+  final num? opacity;
+
+  /// (Highcharts, Highstock) Properties for each single point.
+  final HCPlotSeriesPointOptions? point;
+
+  /// (Highcharts, Highstock) Deprecated. Use
+  final dynamic pointDescriptionFormat;
+
+  /// (Highcharts, Highstock) Deprecated. Use
+  final dynamic pointDescriptionFormatter;
+
+  /// (Highcharts, Highstock, Gantt) If no x values are given for the points in
+  final num? pointInterval;
+
+  /// (Highcharts, Highstock, Gantt) On datetime series, this allows for
+  final String? pointIntervalUnit;
+
+  /// (Highcharts, Highstock, Gantt) Padding between each column or bar, in x
+  final num? pointPadding;
+
+  /// (Highcharts, Highstock, Gantt) Possible values: `"on"`, `"between"`,
+  final dynamic pointPlacement;
+
+  /// (Highcharts, Highstock, Gantt) The X axis range that each point is valid
+  final num? pointRange;
+
+  /// (Highcharts, Highstock, Gantt) If no x values are given for the points in
+  final dynamic pointStart;
+
+  /// (Highcharts, Highstock, Gantt) A pixel value specifying a fixed width for
+  final num? pointWidth;
+
+  /// (Highcharts, Highstock) When true, X values in the data set are relative
+  final dynamic relativeXValue;
+
+  /// (Highcharts, Highstock) Whether to select the series initially. If
+  final dynamic selected;
+
+  /// (Highcharts, Highstock) Whether to apply a drop shadow to the graph line.
+  final dynamic shadow;
+
+  /// (Highcharts, Highstock) If true, a checkbox is displayed next to the
+  final dynamic showCheckbox;
+
+  /// (Highcharts, Highstock) Whether to display this particular series or
+  final dynamic showInLegend;
+
+  /// (Highstock) Whether or not to show the series in the navigator. Takes
+  final dynamic showInNavigator;
+
+  /// (Highcharts, Highstock) Deprecated. Use
+  final dynamic skipKeyboardNavigation;
+
+  /// (Highcharts, Highstock) Sonification/audio chart options for a series.
+  final HCSeriesSonificationOptions? sonification;
+
+  /// (Highcharts, Highstock) A collection of options for different series
+  final HCSeriesStatesOptionsObject? states;
+
+  /// (Highcharts, Highstock) Sticky tracking of mouse events. When true, the
+  final dynamic stickyTracking;
+
+  /// (Highcharts, Highstock) A configuration object for the tooltip rendering
+  final HCSeriesTooltipOptionsObject? tooltip;
+
+  /// (Highcharts, Highstock, Gantt) When a series contains a `data` array that
+  final num? turboThreshold;
+
+  /// (Highcharts, Highstock) Set the initial visibility of the series.
+  final dynamic visible;
+
+  /// (Highcharts, Highstock) Defines the Axis on which the zones are applied.
+  final String? zoneAxis;
+
+  /// (Highcharts, Highstock) An array defining zones within a series. Zones
+  final List<HCSeriesZonesOptionsObject>? zones;
+
+  /// (Highcharts, Highstock) Whether to zoom non-cartesian series. If
+  final dynamic zoomEnabled;
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = <String, dynamic>{};
+    if (accessibility != null) {
+      json["accessibility"] = accessibility!.toJson();
+    }
+    if (allowPointSelect != null) {
+      json["allowPointSelect"] = hcJsonValue(allowPointSelect);
+    }
+    if (animation != null) {
+      json["animation"] = hcJsonValue(animation);
+    }
+    if (animationLimit != null) {
+      json["animationLimit"] = animationLimit;
+    }
+    if (boostBlending != null) {
+      json["boostBlending"] = boostBlending;
+    }
+    if (boostThreshold != null) {
+      json["boostThreshold"] = boostThreshold;
+    }
+    if (borderColor != null) {
+      json["borderColor"] = hcJsonValue(borderColor);
+    }
+    if (borderRadius != null) {
+      json["borderRadius"] = hcJsonValue(borderRadius);
+    }
+    if (borderWidth != null) {
+      json["borderWidth"] = borderWidth;
+    }
+    if (centerInCategory != null) {
+      json["centerInCategory"] = hcJsonValue(centerInCategory);
+    }
+    if (className != null) {
+      json["className"] = className;
+    }
+    if (clip != null) {
+      json["clip"] = hcJsonValue(clip);
+    }
+    if (color != null) {
+      json["color"] = hcJsonValue(color);
+    }
+    if (colorAxis != null) {
+      json["colorAxis"] = hcJsonValue(colorAxis);
+    }
+    if (colorByPoint != null) {
+      json["colorByPoint"] = hcJsonValue(colorByPoint);
+    }
+    if (colorIndex != null) {
+      json["colorIndex"] = colorIndex;
+    }
+    if (colorKey != null) {
+      json["colorKey"] = colorKey;
+    }
+    if (colors != null) {
+      json["colors"] = colors!.map((e) => hcJsonValue(e)).toList();
+    }
+    if (compare != null) {
+      json["compare"] = compare;
+    }
+    if (compareBase != null) {
+      json["compareBase"] = hcJsonValue(compareBase);
+    }
+    if (compareStart != null) {
+      json["compareStart"] = hcJsonValue(compareStart);
+    }
+    if (crisp != null) {
+      json["crisp"] = hcJsonValue(crisp);
+    }
+    if (cropThreshold != null) {
+      json["cropThreshold"] = cropThreshold;
+    }
+    if (cumulative != null) {
+      json["cumulative"] = hcJsonValue(cumulative);
+    }
+    if (cumulativeStart != null) {
+      json["cumulativeStart"] = hcJsonValue(cumulativeStart);
+    }
+    if (cursor != null) {
+      json["cursor"] = cursor;
+    }
+    if (custom != null) {
+      json["custom"] = custom!.toJson();
+    }
+    if (dashStyle != null) {
+      json["dashStyle"] = dashStyle;
+    }
+    if (dataGrouping != null) {
+      json["dataGrouping"] = dataGrouping!.toJson();
+    }
+    if (dataLabels != null) {
+      json["dataLabels"] = hcJsonValue(dataLabels);
+    }
+    if (dataMapping != null) {
+      json["dataMapping"] = dataMapping!.toJson();
+    }
+    if (dataSorting != null) {
+      json["dataSorting"] = dataSorting!.toJson();
+    }
+    if (depth != null) {
+      json["depth"] = depth;
+    }
+    if (description != null) {
+      json["description"] = description;
+    }
+    if (dragDrop != null) {
+      json["dragDrop"] = dragDrop!.toJson();
+    }
+    if (edgeColor != null) {
+      json["edgeColor"] = edgeColor;
+    }
+    if (edgeWidth != null) {
+      json["edgeWidth"] = edgeWidth;
+    }
+    if (enableMouseTracking != null) {
+      json["enableMouseTracking"] = hcJsonValue(enableMouseTracking);
+    }
+    if (events != null) {
+      json["events"] = events!.toJson();
+    }
+    if (findNearestPointBy != null) {
+      json["findNearestPointBy"] = findNearestPointBy;
+    }
+    if (getExtremesFromAll != null) {
+      json["getExtremesFromAll"] = hcJsonValue(getExtremesFromAll);
+    }
+    if (grouping != null) {
+      json["grouping"] = hcJsonValue(grouping);
+    }
+    if (groupPadding != null) {
+      json["groupPadding"] = groupPadding;
+    }
+    if (groupZPadding != null) {
+      json["groupZPadding"] = groupZPadding;
+    }
+    if (inactiveOtherPoints != null) {
+      json["inactiveOtherPoints"] = hcJsonValue(inactiveOtherPoints);
+    }
+    if (includeInDataExport != null) {
+      json["includeInDataExport"] = hcJsonValue(includeInDataExport);
+    }
+    if (keys != null) {
+      json["keys"] = keys;
+    }
+    if (label != null) {
+      json["label"] = label!.toJson();
+    }
+    if (lastPrice != null) {
+      json["lastPrice"] = lastPrice!.toJson();
+    }
+    if (lastVisiblePrice != null) {
+      json["lastVisiblePrice"] = lastVisiblePrice!.toJson();
+    }
+    if (legendSymbol != null) {
+      json["legendSymbol"] = legendSymbol;
+    }
+    if (legendSymbolColor != null) {
+      json["legendSymbolColor"] = hcJsonValue(legendSymbolColor);
+    }
+    if (linkedTo != null) {
+      json["linkedTo"] = linkedTo;
+    }
+    if (maxPointWidth != null) {
+      json["maxPointWidth"] = maxPointWidth;
+    }
+    if (minPointLength != null) {
+      json["minPointLength"] = minPointLength;
+    }
+    if (navigatorOptions != null) {
+      json["navigatorOptions"] = navigatorOptions!.toJson();
+    }
+    if (nullInteraction != null) {
+      json["nullInteraction"] = hcJsonValue(nullInteraction);
+    }
+    if (onPoint != null) {
+      json["onPoint"] = hcJsonValue(onPoint);
+    }
+    if (opacity != null) {
+      json["opacity"] = opacity;
+    }
+    if (point != null) {
+      json["point"] = point!.toJson();
+    }
+    if (pointDescriptionFormat != null) {
+      json["pointDescriptionFormat"] = hcJsonValue(pointDescriptionFormat);
+    }
+    if (pointDescriptionFormatter != null) {
+      json["pointDescriptionFormatter"] =
+          hcJsonValue(pointDescriptionFormatter);
+    }
+    if (pointInterval != null) {
+      json["pointInterval"] = pointInterval;
+    }
+    if (pointIntervalUnit != null) {
+      json["pointIntervalUnit"] = pointIntervalUnit;
+    }
+    if (pointPadding != null) {
+      json["pointPadding"] = pointPadding;
+    }
+    if (pointPlacement != null) {
+      json["pointPlacement"] = hcJsonValue(pointPlacement);
+    }
+    if (pointRange != null) {
+      json["pointRange"] = pointRange;
+    }
+    if (pointStart != null) {
+      json["pointStart"] = hcJsonValue(pointStart);
+    }
+    if (pointWidth != null) {
+      json["pointWidth"] = pointWidth;
+    }
+    if (relativeXValue != null) {
+      json["relativeXValue"] = hcJsonValue(relativeXValue);
+    }
+    if (selected != null) {
+      json["selected"] = hcJsonValue(selected);
+    }
+    if (shadow != null) {
+      json["shadow"] = hcJsonValue(shadow);
+    }
+    if (showCheckbox != null) {
+      json["showCheckbox"] = hcJsonValue(showCheckbox);
+    }
+    if (showInLegend != null) {
+      json["showInLegend"] = hcJsonValue(showInLegend);
+    }
+    if (showInNavigator != null) {
+      json["showInNavigator"] = hcJsonValue(showInNavigator);
+    }
+    if (skipKeyboardNavigation != null) {
+      json["skipKeyboardNavigation"] = hcJsonValue(skipKeyboardNavigation);
+    }
+    if (sonification != null) {
+      json["sonification"] = sonification!.toJson();
+    }
+    if (states != null) {
+      json["states"] = states!.toJson();
+    }
+    if (stickyTracking != null) {
+      json["stickyTracking"] = hcJsonValue(stickyTracking);
+    }
+    if (tooltip != null) {
+      json["tooltip"] = tooltip!.toJson();
+    }
+    if (turboThreshold != null) {
+      json["turboThreshold"] = turboThreshold;
+    }
+    if (visible != null) {
+      json["visible"] = hcJsonValue(visible);
+    }
+    if (zoneAxis != null) {
+      json["zoneAxis"] = zoneAxis;
+    }
+    if (zones != null) {
+      json["zones"] = zones!.map((e) => e.toJson()).toList();
+    }
+    if (zoomEnabled != null) {
+      json["zoomEnabled"] = hcJsonValue(zoomEnabled);
+    }
+    return json;
+  }
+}

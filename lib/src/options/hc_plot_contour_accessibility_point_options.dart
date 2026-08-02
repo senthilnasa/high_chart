@@ -1,0 +1,62 @@
+part of 'hc_options.dart';
+
+/// (Highcharts, Highmaps) Point accessibility options for a series.
+class HCPlotContourAccessibilityPointOptions implements HCOption {
+  const HCPlotContourAccessibilityPointOptions({
+    this.dateFormat,
+    this.describeNull,
+    this.descriptionFormat,
+    this.valueDecimals,
+    this.valueDescriptionFormat,
+    this.valuePrefix,
+    this.valueSuffix,
+  });
+
+  /// (Highcharts, Highmaps) Date format to use for points on datetime axes
+  final String? dateFormat;
+
+  /// (Highcharts, Highmaps) Whether or not to describe points with the
+  final dynamic describeNull;
+
+  /// (Highcharts, Highmaps) A format string to use instead of the default
+  final String? descriptionFormat;
+
+  /// (Highcharts, Highmaps) Decimals to use for the values in the point
+  final num? valueDecimals;
+
+  /// (Highcharts, Highmaps) Format to use for describing the values of
+  final String? valueDescriptionFormat;
+
+  /// (Highcharts, Highmaps) Prefix to add to the values in the point
+  final String? valuePrefix;
+
+  /// (Highcharts, Highmaps) Suffix to add to the values in the point
+  final String? valueSuffix;
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = <String, dynamic>{};
+    if (dateFormat != null) {
+      json["dateFormat"] = dateFormat;
+    }
+    if (describeNull != null) {
+      json["describeNull"] = hcJsonValue(describeNull);
+    }
+    if (descriptionFormat != null) {
+      json["descriptionFormat"] = descriptionFormat;
+    }
+    if (valueDecimals != null) {
+      json["valueDecimals"] = valueDecimals;
+    }
+    if (valueDescriptionFormat != null) {
+      json["valueDescriptionFormat"] = valueDescriptionFormat;
+    }
+    if (valuePrefix != null) {
+      json["valuePrefix"] = valuePrefix;
+    }
+    if (valueSuffix != null) {
+      json["valueSuffix"] = valueSuffix;
+    }
+    return json;
+  }
+}

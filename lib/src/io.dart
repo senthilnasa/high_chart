@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 
 import 'mobile/high_chart.dart' as mobile;
+import 'options/hc_options.dart';
 import 'windows/high_chart.dart' as windows;
 
 ///
@@ -14,7 +16,8 @@ import 'windows/high_chart.dart' as windows;
 ///
 class HighCharts extends StatefulWidget {
   const HighCharts({
-    required this.data, // Chart data in JSON format
+    this.data, // Chart data in JSON format
+    this.options, // Typed alternative to `data`
     required this.size, // Size of the chart (height and width)
     this.loader = const Center(
         child:
@@ -26,13 +29,23 @@ class HighCharts extends StatefulWidget {
     this.globalOptions, // Options applied via Highcharts.setOptions()
     this.onEvent, // Callback for events sent from the chart via sendToFlutter()
     super.key,
-  });
+  }) : assert(
+          (data != null) != (options != null),
+          'Provide exactly one of data or options, not both and not '
+          'neither — options silently wins over data if both are set, '
+          'so this is almost always a mistake.',
+        );
 
   /// A custom loader widget displayed until the chart is fully loaded.
   /// Defaults to a `CircularProgressIndicator`. This setting has no effect on the Web platform.
   final Widget loader;
 
   /// Chart data and configuration in JSON format.
+  ///
+  /// Mutually exclusive with [options] — provide exactly one. Prefer
+  /// [options] for compile-time-checked configuration; `data` remains
+  /// available for existing code and for options the typed API doesn't
+  /// cover (e.g. JS function callbacks such as formatters).
   ///
   /// Example:
   /// ```dart
@@ -45,7 +58,21 @@ class HighCharts extends StatefulWidget {
   /// ''';
   /// ```
   /// Reference: [High Charts API](https://api.highcharts.com/highcharts)
-  final String data;
+  final String? data;
+
+  /// Typed, IDE-autocompleted chart configuration, generated from
+  /// Highcharts' own TypeScript definitions. Mutually exclusive with
+  /// [data] — provide exactly one.
+  ///
+  /// Example:
+  /// ```dart
+  /// HCOptions(
+  ///   title: HCTitleOptions(text: 'Sample Chart'),
+  ///   xAxis: HCXAxisOptions(categories: ['A', 'B', 'C']),
+  ///   series: [HCSeriesLineOptions(data: [1, 2, 3])],
+  /// )
+  /// ```
+  final HCOptions? options;
 
   /// Dimensions of the chart widget. Both height and width are required.
   ///
@@ -120,11 +147,17 @@ class HighCharts extends StatefulWidget {
 }
 
 class HighChartsState extends State<HighCharts> {
+  // Resolves the `data`/`options` pair down to the single JS-object-literal
+  // string every platform implementation actually renders.
+  String get _effectiveData => widget.options != null
+      ? jsonEncode(widget.options!.toJson())
+      : widget.data!;
+
   @override
   Widget build(BuildContext context) {
     if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS) {
       return mobile.HighCharts(
-        data: widget.data,
+        data: _effectiveData,
         size: widget.size,
         loader: widget.loader,
         networkScripts: widget.networkScripts,
@@ -135,7 +168,7 @@ class HighChartsState extends State<HighCharts> {
       );
     } else if (Platform.isWindows) {
       return windows.HighCharts(
-        data: widget.data,
+        data: _effectiveData,
         size: widget.size,
         loader: widget.loader,
         scripts: widget.networkScripts,

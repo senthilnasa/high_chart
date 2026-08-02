@@ -250,7 +250,8 @@ void main() {
     expect(setOptionsIndex, lessThan(chartIndex));
   });
 
-  testWidgets('does not call Highcharts.setOptions() when globalOptions is null',
+  testWidgets(
+      'does not call Highcharts.setOptions() when globalOptions is null',
       (tester) async {
     await tester.pumpWidget(
       MaterialApp(
@@ -268,8 +269,7 @@ void main() {
         isNot(contains('Highcharts.setOptions')));
   });
 
-  testWidgets(
-      'delivers JSON-decoded events sent from the chart to onEvent',
+  testWidgets('delivers JSON-decoded events sent from the chart to onEvent',
       (tester) async {
     dynamic received;
     await tester.pumpWidget(
@@ -305,8 +305,7 @@ void main() {
     expect(received, 'not json');
   });
 
-  testWidgets(
-      'saves an exported chart to disk and reports success via onEvent',
+  testWidgets('saves an exported chart to disk and reports success via onEvent',
       (tester) async {
     dynamic received;
     await tester.pumpWidget(

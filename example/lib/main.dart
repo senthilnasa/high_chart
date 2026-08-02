@@ -62,16 +62,36 @@ class ChartExample {
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.data,
+    this.data,
+    this.options,
+    this.optionsSource,
     this.globalOptions,
     this.listensForEvents = false,
     this.eventHint,
-  });
+  })  : assert(
+          (data != null) != (options != null),
+          'Provide exactly one of data or options, not both and not neither.',
+        ),
+        assert(
+          (options == null) == (optionsSource == null),
+          '`optionsSource` must be provided alongside `options`.',
+        );
 
   final String title;
   final String subtitle;
   final IconData icon;
-  final String data;
+
+  /// Raw Highcharts JS config. Mutually exclusive with [options].
+  final String? data;
+
+  /// Typed alternative to [data], built from the generated `HC*Options`
+  /// classes. Mutually exclusive with [data].
+  final HCOptions? options;
+
+  /// The literal Dart source that constructs [options], shown in the "How
+  /// it works" tab instead of `options`'s JSON so the tab demonstrates the
+  /// typed API itself rather than what it compiles down to.
+  final String? optionsSource;
 
   /// Applied via `Highcharts.setOptions()` before the chart is created.
   final String? globalOptions;
@@ -137,7 +157,61 @@ final List<ChartExample> chartExamples = [
     data: _globalOptionsChartData,
     globalOptions: _globalOptionsLang,
   ),
+  ChartExample(
+    title: 'Typed Options (Dart)',
+    subtitle: 'The same chart built with HCOptions instead of a JS string',
+    icon: Icons.data_object_rounded,
+    options: _typedOptionsChart,
+    optionsSource: _typedOptionsChartSource,
+  ),
 ];
+
+/// Demonstrates the generated, IDE-autocompleted `HC*Options` API as an
+/// alternative to hand-writing a `data` string — every option below is a
+/// real typed field, checked at compile time.
+const HCOptions _typedOptionsChart = HCOptions(
+  chart: HCChartOptions(type: 'column'),
+  title: HCTitleOptions(text: 'Monthly Sales (typed)'),
+  subtitle: HCSubtitleOptions(text: 'Built with HCOptions, not a JS string'),
+  xAxis: HCXAxisOptions(
+    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+  ),
+  yAxis: HCYAxisOptions(title: HCYAxisTitleOptions(text: 'Revenue')),
+  series: [
+    HCSeriesColumnOptions(
+      name: 'Revenue',
+      data: [3, 2, 1, 3, 3],
+    ),
+    HCSeriesSplineOptions(
+      name: 'Trend',
+      data: [2, 2.2, 2, 2.6, 2.8],
+    ),
+  ],
+);
+
+// Kept in sync with `_typedOptionsChart` above; shown verbatim in the "How
+// it works" tab so it demonstrates the typed `HC*Options` API itself,
+// rather than the JSON `options.toJson()` compiles down to.
+const String _typedOptionsChartSource = '''
+const HCOptions chart = HCOptions(
+  chart: HCChartOptions(type: 'column'),
+  title: HCTitleOptions(text: 'Monthly Sales (typed)'),
+  subtitle: HCSubtitleOptions(text: 'Built with HCOptions, not a JS string'),
+  xAxis: HCXAxisOptions(
+    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+  ),
+  yAxis: HCYAxisOptions(title: HCYAxisTitleOptions(text: 'Revenue')),
+  series: [
+    HCSeriesColumnOptions(
+      name: 'Revenue',
+      data: [3, 2, 1, 3, 3],
+    ),
+    HCSeriesSplineOptions(
+      name: 'Trend',
+      data: [2, 2.2, 2, 2.6, 2.8],
+    ),
+  ],
+);''';
 
 /// Landing page: a responsive grid of chart cards, Material-gallery style.
 class GalleryHomePage extends StatelessWidget {
@@ -219,7 +293,8 @@ class _ExampleCard extends StatelessWidget {
               CircleAvatar(
                 radius: 22,
                 backgroundColor: colorScheme.primaryContainer,
-                child: Icon(example.icon, color: colorScheme.onPrimaryContainer),
+                child:
+                    Icon(example.icon, color: colorScheme.onPrimaryContainer),
               ),
               const SizedBox(height: 12),
               Text(
@@ -387,6 +462,7 @@ class _ChartViewState extends State<_ChartView> {
                     loader: const Center(child: CircularProgressIndicator()),
                     size: Size(width - 24, height),
                     data: example.data,
+                    options: example.options,
                     themeMode: themeMode,
                     globalOptions: example.globalOptions,
                     onEvent: (event) => _onEvent(context, example, event),
@@ -438,15 +514,21 @@ class _SourceView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final source = example.data.trim();
+    final bool isTyped = example.options != null;
+    final String source =
+        isTyped ? example.optionsSource!.trim() : example.data!.trim();
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'This is the Highcharts configuration passed to the `data` '
-            'parameter of the HighCharts widget for this example.',
+            isTyped
+                ? 'This chart is built from the generated, IDE-autocompleted '
+                    '`HC*Options` classes below instead of a hand-written '
+                    'JS config string.'
+                : 'This is the Highcharts configuration passed to the `data` '
+                    'parameter of the HighCharts widget for this example.',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 12),

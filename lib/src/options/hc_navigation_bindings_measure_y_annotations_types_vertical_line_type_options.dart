@@ -1,0 +1,60 @@
+part of 'hc_options.dart';
+
+/// (Highstock) Additional options for an annotation with the type.
+class HCNavigationBindingsMeasureYAnnotationsTypesVerticalLineTypeOptions
+    implements HCOption {
+  const HCNavigationBindingsMeasureYAnnotationsTypesVerticalLineTypeOptions({
+    this.connector,
+    this.label,
+    this.line,
+    this.points,
+    this.xAxis,
+    this.yAxis,
+  });
+
+  /// (Highstock) Connector options.
+  final HCNavigationBindingsMeasureYAnnotationsTypesVerticalLineTypeConnectorOptions?
+      connector;
+
+  /// (Highstock) Label options.
+  final HCNavigationBindingsMeasureYAnnotationsTypesVerticalLineTypeLabelOptions?
+      label;
+
+  /// (Highstock) Line options.
+  final HCNavigationBindingsMeasureYAnnotationsTypesVerticalLineTypeLineOptions?
+      line;
+
+  final List<
+          HCNavigationBindingsMeasureYAnnotationsTypesVerticalLineTypePointsOptions>?
+      points;
+
+  /// (Highstock) This number defines which xAxis the point is connected to. It
+  final num? xAxis;
+
+  /// (Highstock) This number defines which yAxis the point is connected to. It
+  final num? yAxis;
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = <String, dynamic>{};
+    if (connector != null) {
+      json["connector"] = connector!.toJson();
+    }
+    if (label != null) {
+      json["label"] = label!.toJson();
+    }
+    if (line != null) {
+      json["line"] = line!.toJson();
+    }
+    if (points != null) {
+      json["points"] = points!.map((e) => e.toJson()).toList();
+    }
+    if (xAxis != null) {
+      json["xAxis"] = xAxis;
+    }
+    if (yAxis != null) {
+      json["yAxis"] = yAxis;
+    }
+    return json;
+  }
+}

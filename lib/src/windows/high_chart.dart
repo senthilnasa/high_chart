@@ -161,8 +161,7 @@ class HighChartsState extends State<HighCharts> {
   bool _isDarkTheme() {
     return widget.themeMode == ThemeMode.dark ||
         (widget.themeMode == ThemeMode.system &&
-            PlatformDispatcher.instance.platformBrightness ==
-                Brightness.dark);
+            PlatformDispatcher.instance.platformBrightness == Brightness.dark);
   }
 
   /// Initializes the WebView platform state.
@@ -390,8 +389,8 @@ class HighChartsState extends State<HighCharts> {
           ?.call({'event': 'export', 'status': 'success', 'path': file.path});
     } catch (error) {
       debugPrint('High Charts Error -> failed to save exported file: $error');
-      widget.onEvent?.call(
-          {'event': 'export', 'status': 'error', 'message': '$error'});
+      widget.onEvent
+          ?.call({'event': 'export', 'status': 'error', 'message': '$error'});
     }
   }
 
@@ -433,11 +432,11 @@ class HighChartsState extends State<HighCharts> {
       // syntax mistake in the user's chart `data`) must not crash the app.
       _controller
           .executeScript(
-            "$themeOptionsScript$globalOptionsScript Highcharts.chart('highChartsDiv',${widget.data})",
-          )
+        "$themeOptionsScript$globalOptionsScript Highcharts.chart('highChartsDiv',${widget.data})",
+      )
           .catchError((Object error) {
-            debugPrint('High Charts Error -> $error');
-          });
+        debugPrint('High Charts Error -> $error');
+      });
     }
   }
 }

@@ -14,16 +14,19 @@
 
 A Flutter wrapper around [Highcharts (.JS)](https://www.highcharts.com/) for building rich, interactive charts — line, column, pie, area, combination charts, and more — with a single, consistent API.
 
-**Supports all Flutter platforms:** Android, iOS, Web, Windows, macOS, and Linux.
+**Supports Android, iOS, Web, Windows, and macOS.** Linux is declared as a
+plugin platform but not yet actually implemented — see
+[Platform support](#platform-support).
 
 ## Features
 
-- 🎯 Full access to the [Highcharts JS API](https://api.highcharts.com/highcharts) via a simple JSON/JS configuration string
+- 🎯 Full access to the [Highcharts JS API](https://api.highcharts.com/highcharts) via a simple JSON/JS configuration string, or a fully typed, IDE-autocompleted `HCOptions` API generated from Highcharts' own TypeScript definitions
 - 🌐 Works everywhere Flutter runs — mobile, desktop, and web from the same codebase
 - 🌗 Built-in light, dark, and system theme support
 - 📦 Load Highcharts scripts from the network or bundle them locally as assets
 - ⚙️ Global Highcharts configuration via `Highcharts.setOptions()` (e.g. `lang`)
 - 📡 Two-way communication: chart events (selection, click, zoom, …) can call back into Flutter
+- 💾 Native chart export to PNG/JPEG/SVG — saved straight to disk on Android, iOS, macOS, and Windows, no manual download plumbing
 - 🔗 External links inside charts open in the system browser instead of hijacking the in-app WebView
 
 ## Installation
@@ -32,7 +35,7 @@ Add `high_chart` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  high_chart: ^2.7.0
+  high_chart: ^2.8.0
 ```
 
 Then fetch the package:
@@ -76,6 +79,56 @@ class ExampleChart extends StatelessWidget {
 ```
 
 The `data` string is standard Highcharts configuration — see the [Highcharts API reference](https://api.highcharts.com/highcharts) for every option available (series types, axes, tooltips, legends, exporting, and more).
+
+### Typed options (`HCOptions`)
+
+As an alternative to hand-writing a `data` string, pass `options` — a fully
+typed, IDE-autocompleted configuration tree generated from Highcharts' own
+TypeScript definitions (`HCOptions`, `HCChartOptions`, `HCSeriesLineOptions`,
+`HCTitleOptions`, and ~4,900 more, one per Highcharts option group):
+
+```dart
+import 'package:high_chart/high_chart.dart';
+
+HighCharts(
+  size: const Size(400, 300),
+  options: HCOptions(
+    title: HCTitleOptions(text: 'Monthly Sales'),
+    xAxis: HCXAxisOptions(
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+    ),
+    series: [
+      HCSeriesColumnOptions(name: 'Revenue', data: [3, 2, 1, 3, 3]),
+    ],
+  ),
+  networkScripts: const ['https://code.highcharts.com/highcharts.js'],
+)
+```
+
+`data` and `options` are mutually exclusive — provide exactly one. Every
+field is optional and only set fields are sent to the chart, so there's no
+need to fill in an entire options tree just to change one value.
+
+A few things worth knowing:
+
+- **Callbacks/formatters aren't in the typed API.** A JS function can't be
+  represented in a JSON payload sent from Dart, so properties like
+  `tooltip.formatter` don't have a typed field. Use `data` for charts that
+  need them, or combine both — see below.
+- **`series` (and a few similarly "any one of ~100 shapes" properties) is
+  `dynamic`.** Highcharts' `series` type is a union of one interface per
+  series type, which Dart can't model as a single field type. The typed
+  series classes (`HCSeriesLineOptions`, `HCSeriesPieOptions`, …) still
+  exist and are still fully typed — just put them in the list directly:
+  `series: [HCSeriesLineOptions(...), HCSeriesPieOptions(...)]`.
+- **Raw maps still work inside typed options.** Any `dynamic` slot (like
+  `series`) also accepts a plain `Map`/`List`/primitive — useful for the
+  rare option the generator skipped, or for gradually migrating a `data`
+  string over: `series: [{'type': 'line', 'data': [1, 2, 3]}]` serializes
+  exactly as if you'd written it in a `data` string.
+
+See `tool/generate_options/README.md` for how the typed API is generated
+and how to regenerate it against a newer Highcharts release.
 
 ### Loading scripts
 
@@ -243,11 +296,18 @@ HighCharts(
 
 | Android | iOS | Web | Windows | macOS | Linux |
 |:-------:|:---:|:---:|:-------:|:-----:|:-----:|
-|    ✅    |  ✅  |  ✅  |    ✅    |   ✅   |   ✅   |
+|    ✅    |  ✅  |  ✅  |    ✅    |   ✅   |   ❌   |
+
+Linux is registered as a plugin platform (`pubspec.yaml` declares it, and
+there's a native stub under `linux/`), but there's no actual chart-rendering
+implementation behind it yet — a `HighCharts` widget on Linux currently
+renders an "Unsupported Platform" placeholder. Contributions welcome; it'd
+need a Linux-capable WebView (e.g. via a CEF-based package) wired up the
+same way `lib/src/mobile/` and `lib/src/windows/` are.
 
 ## Example
 
-A complete, runnable example gallery is available in the [`example/`](example) directory, demonstrating multiple chart types, theme switching, `globalOptions`, and `onEvent`.
+A complete, runnable example gallery is available in the [`example/`](example) directory, demonstrating multiple chart types, theme switching, `globalOptions`, `onEvent`, and the typed `HCOptions` API.
 
 ## Documentation
 

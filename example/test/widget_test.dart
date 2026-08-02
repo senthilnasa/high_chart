@@ -48,8 +48,7 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(1200, 2400));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
-    final example =
-        chartExamples.firstWhere((e) => e.title == 'Zoom & Events');
+    final example = chartExamples.firstWhere((e) => e.title == 'Zoom & Events');
     expect(example.listensForEvents, isTrue);
 
     await tester.pumpWidget(const HighChartsGalleryApp());
@@ -67,6 +66,38 @@ void main() {
     await tester.pump();
 
     expect(find.textContaining('onEvent received'), findsOneWidget);
+  });
+
+  testWidgets(
+      'the Typed Options example builds its chart from HCOptions and shows '
+      'its Dart source in the source view', (WidgetTester tester) async {
+    await tester.binding.setSurfaceSize(const Size(1200, 2400));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final example =
+        chartExamples.firstWhere((e) => e.title == 'Typed Options (Dart)');
+    expect(example.options, isNotNull);
+    expect(example.data, isNull);
+    expect(example.optionsSource, isNotNull);
+
+    await tester.pumpWidget(const HighChartsGalleryApp());
+    await tester.pump();
+
+    await tester.tap(find.text(example.title));
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(find.byType(HighCharts), findsOneWidget);
+
+    await tester.tap(find.text('How it works'));
+    await tester.pumpAndSettle();
+
+    // The source view renders `example.optionsSource` verbatim (the literal
+    // Dart that builds `options`, not its JSON) — spot-check a couple of
+    // fields that only exist if that's actually what's showing.
+    expect(find.textContaining("text: 'Monthly Sales (typed)'"),
+        findsOneWidget);
+    expect(find.textContaining("type: 'column'"), findsOneWidget);
   });
 }
 

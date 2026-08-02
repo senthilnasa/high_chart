@@ -1,0 +1,12 @@
+part of 'hc_options.dart';
+
+/// (Highstock) Events available in annotations.
+class HCNavigationBindingsElliott3AnnotationsEventsOptions implements HCOption {
+  const HCNavigationBindingsElliott3AnnotationsEventsOptions();
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = <String, dynamic>{};
+    return json;
+  }
+}

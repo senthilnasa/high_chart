@@ -34,3 +34,7 @@ build/
 
 # Optional: Exclude unnecessary assets
 img/
+
+# Typed-options generator: dev-only tooling (including its ~22MB node_modules)
+# that regenerates lib/src/options/, not needed by package consumers.
+tool/

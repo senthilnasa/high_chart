@@ -50,3 +50,10 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Typed-options generator (tool/generate_options/) intermediate files
+tool/generate_options/node_modules/
+tool/generate_options/.dts_cache/
+tool/generate_options/.dart_out/
+tool/generate_options/.schema.json
+tool/generate_options/.highcharts_version

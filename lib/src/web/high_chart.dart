@@ -8,6 +8,7 @@ import 'package:web/web.dart' as web;
 
 import 'package:flutter/material.dart';
 
+import '../options/hc_options.dart';
 import 'js.dart';
 
 ///
@@ -19,7 +20,8 @@ import 'js.dart';
 ///
 class HighCharts extends StatefulWidget {
   const HighCharts({
-    required this.data, // Chart data in JSON format
+    this.data, // Chart data in JSON format
+    this.options, // Typed alternative to `data`
     required this.size, // Size of the chart (height and width)
     this.loader = const Center(
         child:
@@ -31,13 +33,20 @@ class HighCharts extends StatefulWidget {
     this.themeMode = ThemeMode.system, // Theme mode for the chart
     this.globalOptions, // Options applied via Highcharts.setOptions()
     this.onEvent, // Callback for events sent from the chart via sendToFlutter()
-  });
+  }) : assert(
+          (data != null) != (options != null),
+          'Provide exactly one of data or options, not both and not '
+          'neither — options silently wins over data if both are set, '
+          'so this is almost always a mistake.',
+        );
 
   /// A custom loader widget displayed until the chart is fully loaded.
   /// Defaults to a `CircularProgressIndicator`. This setting has no effect on the Web platform.
   final Widget loader;
 
   /// Chart data and configuration in JSON format.
+  ///
+  /// Mutually exclusive with [options] — provide exactly one.
   ///
   /// Example:
   /// ```dart
@@ -50,7 +59,12 @@ class HighCharts extends StatefulWidget {
   /// ''';
   /// ```
   /// Reference: [High Charts API](https://api.highcharts.com/highcharts)
-  final String data;
+  final String? data;
+
+  /// Typed, IDE-autocompleted chart configuration, generated from
+  /// Highcharts' own TypeScript definitions. Mutually exclusive with
+  /// [data] — provide exactly one.
+  final HCOptions? options;
 
   /// Dimensions of the chart widget. Both height and width are required.
   ///
@@ -162,13 +176,19 @@ class HighChartsState extends State<HighCharts> {
   bool _isDarkTheme() {
     return widget.themeMode == ThemeMode.dark ||
         (widget.themeMode == ThemeMode.system &&
-            PlatformDispatcher.instance.platformBrightness ==
-                Brightness.dark);
+            PlatformDispatcher.instance.platformBrightness == Brightness.dark);
   }
+
+  // Resolves the `data`/`options` pair down to the single JS-object-literal
+  // string actually embedded into the chart-creation script.
+  String get _effectiveData => widget.options != null
+      ? jsonEncode(widget.options!.toJson())
+      : widget.data!;
 
   @override
   void didUpdateWidget(covariant HighCharts oldWidget) {
     if (oldWidget.data != widget.data ||
+        oldWidget.options != widget.options ||
         oldWidget.size != widget.size ||
         oldWidget.networkScripts != widget.networkScripts ||
         oldWidget.localScripts != widget.localScripts ||
@@ -243,9 +263,8 @@ class HighChartsState extends State<HighCharts> {
       // In dark mode, re-point Highcharts' own hard-coded text colors at the
       // dark palette before applying the user's global options and creating
       // the chart, so title/legend/axis text stays readable.
-      final String themeOptionsScript = _isDarkTheme()
-          ? "Highcharts.setOptions($_darkThemeOptions);"
-          : '';
+      final String themeOptionsScript =
+          _isDarkTheme() ? "Highcharts.setOptions($_darkThemeOptions);" : '';
       final String globalOptionsScript = widget.globalOptions != null
           ? "Highcharts.setOptions(${widget.globalOptions});"
           : '';
@@ -265,7 +284,7 @@ class HighChartsState extends State<HighCharts> {
   }
   $themeOptionsScript
   $globalOptionsScript
-  Highcharts.chart('$_highChartsId', ${widget.data});
+  Highcharts.chart('$_highChartsId', $_effectiveData);
 })();
 ''');
       } catch (error) {

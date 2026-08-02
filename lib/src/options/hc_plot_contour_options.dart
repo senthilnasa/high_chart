@@ -1,0 +1,427 @@
+part of 'hc_options.dart';
+
+/// (Highcharts, Highmaps) A contour plot is a graphical representation of
+class HCPlotContourOptions implements HCOption {
+  const HCPlotContourOptions({
+    this.accessibility,
+    this.allowPointSelect,
+    this.animation,
+    this.boostBlending,
+    this.boostThreshold,
+    this.borderColor,
+    this.borderWidth,
+    this.className,
+    this.clip,
+    this.color,
+    this.colorAxis,
+    this.colorIndex,
+    this.colorKey,
+    this.contourInterval,
+    this.contourOffset,
+    this.crisp,
+    this.cursor,
+    this.custom,
+    this.dataLabels,
+    this.dataMapping,
+    this.dataSorting,
+    this.description,
+    this.enableMouseTracking,
+    this.events,
+    this.findNearestPointBy,
+    this.gapSize,
+    this.gapUnit,
+    this.inactiveOtherPoints,
+    this.includeInDataExport,
+    this.joinBy,
+    this.keys,
+    this.label,
+    this.legendSymbol,
+    this.lineWidth,
+    this.linkedTo,
+    this.marker,
+    this.negativeColor,
+    this.nullInteraction,
+    this.onPoint,
+    this.opacity,
+    this.point,
+    this.pointDescriptionFormat,
+    this.pointDescriptionFormatter,
+    this.relativeXValue,
+    this.selected,
+    this.showCheckbox,
+    this.showInLegend,
+    this.skipKeyboardNavigation,
+    this.smoothColoring,
+    this.sonification,
+    this.states,
+    this.stickyTracking,
+    this.tooltip,
+    this.turboThreshold,
+    this.visible,
+    this.zIndex,
+    this.zoneAxis,
+    this.zones,
+    this.zoomEnabled,
+  });
+
+  /// (Highcharts, Highmaps) Accessibility options for a series.
+  final HCSeriesAccessibilityOptionsObject? accessibility;
+
+  /// (Highcharts, Highmaps) Allow this series' points to be selected by
+  final dynamic allowPointSelect;
+
+  /// (Highcharts, Highmaps) Enable or disable the initial animation when a
+  final dynamic animation;
+
+  /// (Highcharts, Highmaps) Sets the color blending in the boost module.
+  final String? boostBlending;
+
+  /// (Highcharts, Highmaps) Set the point threshold for when a series should
+  final num? boostThreshold;
+
+  /// (Highmaps) The border color of the map areas.
+  final dynamic borderColor;
+
+  /// (Highmaps) The border width of each map area.
+  final num? borderWidth;
+
+  /// (Highcharts, Highmaps) An additional class name to apply to the series'
+  final String? className;
+
+  /// (Highcharts, Highmaps) Disable this option to allow series rendering in
+  final dynamic clip;
+
+  /// (Highcharts, Highmaps) The main color of the series. In line type series
+  final dynamic color;
+
+  /// (Highcharts, Highstock, Highmaps) When using dual or multiple color axes,
+  final dynamic colorAxis;
+
+  /// (Highcharts, Highmaps) Styled mode only. A specific color index to use
+  final num? colorIndex;
+
+  /// (Highcharts, Highstock, Highmaps) This must be set to `'value'` to make
+  final String? colorKey;
+
+  /// (Highcharts, Highmaps) The interval between contour lines. Determines the
+  final num? contourInterval;
+
+  /// (Highcharts, Highmaps) The offset for contour line positioning. Shifts
+  final num? contourOffset;
+
+  /// (Highcharts, Highstock, Gantt) When true, each point or column edge is
+  final dynamic crisp;
+
+  /// (Highcharts, Highmaps) You can set the cursor to "pointer" if you have
+  final String? cursor;
+
+  /// (Highcharts, Highmaps) A reserved subspace to store options and values
+  final HCDictionary? custom;
+
+  /// (Highcharts, Highstock, Highmaps, Gantt) Options for the series data
+  final dynamic dataLabels;
+
+  /// (Highcharts, Highmaps) The mapping between the data table and the series
+  final HCDataMappingOptionsObject? dataMapping;
+
+  /// (Highcharts, Highstock) Options for series data sorting.
+  final HCPlotContourDataSortingOptions? dataSorting;
+
+  /// (Highcharts, Highmaps) Deprecated. Use
+  final String? description;
+
+  /// (Highcharts, Highmaps) Enable or disable the mouse tracking for a
+  final dynamic enableMouseTracking;
+
+  /// (Highcharts, Highmaps) General event handlers for the series items. These
+  final HCSeriesEventsOptionsObject? events;
+
+  /// (Highcharts, Highmaps) Determines whether the series should look for the
+  final String? findNearestPointBy;
+
+  /// (Highcharts, Highstock) Defines when to display a gap in the graph,
+  final num? gapSize;
+
+  /// (Highcharts, Highstock) Together with gapSize, this option defines where
+  final String? gapUnit;
+
+  /// (Highcharts, Highmaps) Highlight only the hovered point and fade the
+  final dynamic inactiveOtherPoints;
+
+  /// (Highcharts, Highmaps) When set to `false` will prevent the series data
+  final dynamic includeInDataExport;
+
+  /// (Highmaps) What property to join the `mapData` to the value data. For
+  final dynamic joinBy;
+
+  /// (Highcharts, Highmaps) An array specifying which option maps to which key
+  final List<String>? keys;
+
+  /// (Highcharts, Highstock, Gantt) Series labels are placed as close to the
+  final HCSeriesLabelOptionsObject? label;
+
+  /// (Highcharts, Highmaps) What type of legend symbol to render for this
+  final String? legendSymbol;
+
+  /// (Highcharts, Highstock) This setting controls the visibility and size of
+  final num? lineWidth;
+
+  /// (Highcharts, Highstock, Gantt) The id of another series to link to.
+  final String? linkedTo;
+
+  /// (Highcharts, Highmaps) Options for the point markers of line and
+  final HCPointMarkerOptionsObject? marker;
+
+  /// (Highcharts, Highmaps) The color for the parts of the graph or points
+  final dynamic negativeColor;
+
+  /// (Highcharts, Highstock) Whether or not data-points with the value of
+  final dynamic nullInteraction;
+
+  /// (Highcharts, Highmaps) Options for the _Series on point_ feature. Only
+  final dynamic onPoint;
+
+  /// (Highcharts, Highmaps) Opacity of a series parts: line, fill (e.g. area)
+  final num? opacity;
+
+  /// (Highcharts, Highmaps) Properties for each single point.
+  final HCPlotSeriesPointOptions? point;
+
+  /// (Highcharts, Highmaps) Deprecated. Use
+  final dynamic pointDescriptionFormat;
+
+  /// (Highcharts, Highmaps) Deprecated. Use
+  final dynamic pointDescriptionFormatter;
+
+  /// (Highcharts, Highstock) When true, X values in the data set are relative
+  final dynamic relativeXValue;
+
+  /// (Highcharts, Highmaps) Whether to select the series initially. If
+  final dynamic selected;
+
+  /// (Highcharts, Highmaps) If true, a checkbox is displayed next to the
+  final dynamic showCheckbox;
+
+  /// (Highcharts, Highmaps) Whether to display this particular series or
+  final dynamic showInLegend;
+
+  /// (Highcharts, Highmaps) Deprecated. Use
+  final dynamic skipKeyboardNavigation;
+
+  /// (Highcharts, Highmaps) Whether to use gradually transitioning color
+  final dynamic smoothColoring;
+
+  /// (Highcharts, Highmaps) Sonification/audio chart options for a series.
+  final HCSeriesSonificationOptions? sonification;
+
+  /// (Highcharts, Highmaps) A collection of options for different series
+  final HCSeriesStatesOptionsObject? states;
+
+  /// (Highcharts, Highstock, Highmaps) Sticky tracking of mouse events. When
+  final dynamic stickyTracking;
+
+  /// (Highcharts, Highstock, Highmaps) A configuration object for the tooltip
+  final HCSeriesTooltipOptionsObject? tooltip;
+
+  /// (Highcharts, Highstock, Gantt) When a series contains a `data` array that
+  final num? turboThreshold;
+
+  /// (Highcharts, Highmaps) Set the initial visibility of the series.
+  final dynamic visible;
+
+  /// (Highmaps) Define the z index of the series.
+  final num? zIndex;
+
+  /// (Highcharts, Highstock) Defines the Axis on which the zones are applied.
+  final String? zoneAxis;
+
+  /// (Highcharts, Highstock) An array defining zones within a series. Zones
+  final List<HCSeriesZonesOptionsObject>? zones;
+
+  /// (Highcharts, Highmaps) Whether to zoom non-cartesian series. If
+  final dynamic zoomEnabled;
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = <String, dynamic>{};
+    if (accessibility != null) {
+      json["accessibility"] = accessibility!.toJson();
+    }
+    if (allowPointSelect != null) {
+      json["allowPointSelect"] = hcJsonValue(allowPointSelect);
+    }
+    if (animation != null) {
+      json["animation"] = hcJsonValue(animation);
+    }
+    if (boostBlending != null) {
+      json["boostBlending"] = boostBlending;
+    }
+    if (boostThreshold != null) {
+      json["boostThreshold"] = boostThreshold;
+    }
+    if (borderColor != null) {
+      json["borderColor"] = hcJsonValue(borderColor);
+    }
+    if (borderWidth != null) {
+      json["borderWidth"] = borderWidth;
+    }
+    if (className != null) {
+      json["className"] = className;
+    }
+    if (clip != null) {
+      json["clip"] = hcJsonValue(clip);
+    }
+    if (color != null) {
+      json["color"] = hcJsonValue(color);
+    }
+    if (colorAxis != null) {
+      json["colorAxis"] = hcJsonValue(colorAxis);
+    }
+    if (colorIndex != null) {
+      json["colorIndex"] = colorIndex;
+    }
+    if (colorKey != null) {
+      json["colorKey"] = colorKey;
+    }
+    if (contourInterval != null) {
+      json["contourInterval"] = contourInterval;
+    }
+    if (contourOffset != null) {
+      json["contourOffset"] = contourOffset;
+    }
+    if (crisp != null) {
+      json["crisp"] = hcJsonValue(crisp);
+    }
+    if (cursor != null) {
+      json["cursor"] = cursor;
+    }
+    if (custom != null) {
+      json["custom"] = custom!.toJson();
+    }
+    if (dataLabels != null) {
+      json["dataLabels"] = hcJsonValue(dataLabels);
+    }
+    if (dataMapping != null) {
+      json["dataMapping"] = dataMapping!.toJson();
+    }
+    if (dataSorting != null) {
+      json["dataSorting"] = dataSorting!.toJson();
+    }
+    if (description != null) {
+      json["description"] = description;
+    }
+    if (enableMouseTracking != null) {
+      json["enableMouseTracking"] = hcJsonValue(enableMouseTracking);
+    }
+    if (events != null) {
+      json["events"] = events!.toJson();
+    }
+    if (findNearestPointBy != null) {
+      json["findNearestPointBy"] = findNearestPointBy;
+    }
+    if (gapSize != null) {
+      json["gapSize"] = gapSize;
+    }
+    if (gapUnit != null) {
+      json["gapUnit"] = gapUnit;
+    }
+    if (inactiveOtherPoints != null) {
+      json["inactiveOtherPoints"] = hcJsonValue(inactiveOtherPoints);
+    }
+    if (includeInDataExport != null) {
+      json["includeInDataExport"] = hcJsonValue(includeInDataExport);
+    }
+    if (joinBy != null) {
+      json["joinBy"] = hcJsonValue(joinBy);
+    }
+    if (keys != null) {
+      json["keys"] = keys;
+    }
+    if (label != null) {
+      json["label"] = label!.toJson();
+    }
+    if (legendSymbol != null) {
+      json["legendSymbol"] = legendSymbol;
+    }
+    if (lineWidth != null) {
+      json["lineWidth"] = lineWidth;
+    }
+    if (linkedTo != null) {
+      json["linkedTo"] = linkedTo;
+    }
+    if (marker != null) {
+      json["marker"] = marker!.toJson();
+    }
+    if (negativeColor != null) {
+      json["negativeColor"] = hcJsonValue(negativeColor);
+    }
+    if (nullInteraction != null) {
+      json["nullInteraction"] = hcJsonValue(nullInteraction);
+    }
+    if (onPoint != null) {
+      json["onPoint"] = hcJsonValue(onPoint);
+    }
+    if (opacity != null) {
+      json["opacity"] = opacity;
+    }
+    if (point != null) {
+      json["point"] = point!.toJson();
+    }
+    if (pointDescriptionFormat != null) {
+      json["pointDescriptionFormat"] = hcJsonValue(pointDescriptionFormat);
+    }
+    if (pointDescriptionFormatter != null) {
+      json["pointDescriptionFormatter"] =
+          hcJsonValue(pointDescriptionFormatter);
+    }
+    if (relativeXValue != null) {
+      json["relativeXValue"] = hcJsonValue(relativeXValue);
+    }
+    if (selected != null) {
+      json["selected"] = hcJsonValue(selected);
+    }
+    if (showCheckbox != null) {
+      json["showCheckbox"] = hcJsonValue(showCheckbox);
+    }
+    if (showInLegend != null) {
+      json["showInLegend"] = hcJsonValue(showInLegend);
+    }
+    if (skipKeyboardNavigation != null) {
+      json["skipKeyboardNavigation"] = hcJsonValue(skipKeyboardNavigation);
+    }
+    if (smoothColoring != null) {
+      json["smoothColoring"] = hcJsonValue(smoothColoring);
+    }
+    if (sonification != null) {
+      json["sonification"] = sonification!.toJson();
+    }
+    if (states != null) {
+      json["states"] = states!.toJson();
+    }
+    if (stickyTracking != null) {
+      json["stickyTracking"] = hcJsonValue(stickyTracking);
+    }
+    if (tooltip != null) {
+      json["tooltip"] = tooltip!.toJson();
+    }
+    if (turboThreshold != null) {
+      json["turboThreshold"] = turboThreshold;
+    }
+    if (visible != null) {
+      json["visible"] = hcJsonValue(visible);
+    }
+    if (zIndex != null) {
+      json["zIndex"] = zIndex;
+    }
+    if (zoneAxis != null) {
+      json["zoneAxis"] = zoneAxis;
+    }
+    if (zones != null) {
+      json["zones"] = zones!.map((e) => e.toJson()).toList();
+    }
+    if (zoomEnabled != null) {
+      json["zoomEnabled"] = hcJsonValue(zoomEnabled);
+    }
+    return json;
+  }
+}

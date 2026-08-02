@@ -2,6 +2,16 @@
 
 All notable changes to the High Chart package will be documented in this file.
 
+## [2.8.0]
+### Features
+- Added `options`, a fully typed, IDE-autocompleted alternative to the raw `data` string: `HCOptions` plus ~4,900 generated `HC*Options` classes (one per Highcharts option group and series type, generated against Highcharts 13), covering the full Highcharts option tree. `data` and `options` are mutually exclusive; provide exactly one
+  - Generated from Highcharts' own TypeScript definitions using the real TypeScript compiler API (not hand-maintained) — run `tool/generate_options/generate.sh` to regenerate against whatever Highcharts currently publishes as `latest`; see `tool/generate_options/README.md` for details
+  - Any `dynamic`-typed slot (e.g. `series`, whose real type is a ~100-way union of series-specific option types Dart can't model as one type) still accepts either a typed `HC*Options` object or a raw `Map`/`List`/primitive, so existing untyped payloads keep working unchanged, including mixed with typed options in the same tree
+  - Function-typed options (formatters/callbacks) aren't represented in the typed API — Highcharts can't receive a JS function from a JSON payload either way; use `data` for charts that need them
+  - Each generated class lives in its own `hc_<snake_case_name>.dart` file under `lib/src/options/`
+### Documentation
+- Corrected the README's platform support claims: Linux was listed as fully supported, but `HighCharts` has no real implementation on Linux (it falls through to an "Unsupported Platform" placeholder) — the `linux/` native plugin is still the unmodified `flutter create` template stub
+
 ## [2.7.0]
 ### Features
 - Added native "save exported chart to disk" support on Android, iOS, macOS, and Windows. The plugin now intercepts the exporting module's client-side download (requires `offline-exporting.js`, see below) and writes the file to the platform's Downloads folder where one exists, falling back to app storage elsewhere. Adds a new dependency: `path_provider` (#24)
